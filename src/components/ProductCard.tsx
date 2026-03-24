@@ -56,7 +56,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           transformStyle: 'preserve-3d'
         }}
       >
-        <Link href={`/product/${product.slug || product.id}`} className="block relative aspect-[4/5] overflow-hidden bg-stone-100">
+        <Link href={`/${product.slug || product.id}`} className="block relative aspect-[4/5] overflow-hidden bg-stone-100">
           <img
             src={product.image}
             alt={product.name}
@@ -68,7 +68,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           
           {/* Discount Tag */}
           {discountPercentage > 0 && (
-            <div className="absolute top-3 left-3 bg-terracotta text-white text-[10px] font-bold px-2 py-1 rounded-md shadow-lg z-20 animate-pulse">
+            <div className="absolute top-3 left-3 text-red-500 bg-red-50 text-[10px] font-bold px-2 py-1 rounded-md shadow-lg z-20 animate-pulse">
               -{discountPercentage}%
             </div>
           )}
@@ -84,7 +84,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                   </div>
                 )}
              </div>
-             <Link href={`/product/${product.slug || product.id}`}>
+             <Link href={`/${product.slug || product.id}`}>
               <h3 className="text-base font-serif font-medium text-stone-900 group-hover:text-terracotta transition-colors line-clamp-1 mb-1">
                 {product.name}
               </h3>

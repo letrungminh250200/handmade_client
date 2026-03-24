@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useCart } from '@/context/CartContext';
 import { useRouter } from 'next/navigation';
 import { formatCurrency, getCartItemKey, calculateShipping, FREE_SHIPPING_THRESHOLD } from '@/lib/utils';
-import { orderApi } from '@/services/api';
+
 
 const Checkout: React.FC = () => {
   const { cart, cartTotal, clearCart } = useCart();
@@ -45,18 +45,23 @@ const Checkout: React.FC = () => {
     setOrderError(null);
 
     try {
-      await orderApi.create({
-        customer_name: formData.name,
-        customer_phone: formData.phone,
-        customer_email: formData.email,
-        address: formData.address,
-        payment_method: formData.paymentMethod,
-        items: cart.map(item => ({
-          variant_id: item.variantId || item.id,
-          quantity: item.quantity,
-          price: item.price,
-        })),
+      const res = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customer_name: formData.name,
+          customer_phone: formData.phone,
+          customer_email: formData.email,
+          address: formData.address,
+          payment_method: formData.paymentMethod,
+          items: cart.map(item => ({
+            variant_id: item.variantId || item.id,
+            quantity: item.quantity,
+            price: item.price,
+          })),
+        }),
       });
+      if (!res.ok) throw new Error('Order failed');
 
       clearCart();
       alert('Đặt hàng thành công! Cảm ơn bạn đã ủng hộ Minh Thư Handmade.');
