@@ -3,7 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowRight, PenTool, BookOpen } from 'lucide-react';
 import Link from 'next/link';
-import { PRODUCTS, BLOG_POSTS } from '@/lib/constants';
+import { BLOG_POSTS } from '@/lib/constants';
+import { productApi } from '@/services/api';
+import { Product } from '@/lib/types';
 import ProductCard from '@/components/ProductCard';
 import { LOGO_SRC } from '@/lib/utils';
 
@@ -18,9 +20,20 @@ const SplitText = ({ text, className }: { text: string, className?: string }) =>
 );
 
 const Home: React.FC = () => {
-  const featuredProducts = PRODUCTS.slice(0, 8);
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const featuredPosts = BLOG_POSTS.slice(0, 3);
   const [offsetY, setOffsetY] = useState(0);
+
+  useEffect(() => {
+    productApi.getHotDeals(8)
+      .then(products => setFeaturedProducts(products))
+      .catch(err => {
+        console.error('Failed to load products:', err);
+        setFeaturedProducts([]);
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -41,7 +54,7 @@ const Home: React.FC = () => {
     }, { threshold: 0.1 });
     document.querySelectorAll('.opacity-0-start').forEach((el) => observer.observe(el));
     return () => observer.disconnect();
-  }, []);
+  }, [loading]);
 
   return (
     <div className="flex flex-col min-h-screen overflow-x-hidden bg-[#fafaf9]">
@@ -123,11 +136,25 @@ const Home: React.FC = () => {
           </Link>
         </div>
         <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
-          {featuredProducts.map((product, idx) => (
-            <div key={product.id} className={`opacity-0-start delay-${(idx % 4) * 100}`}>
-              <ProductCard product={product} />
+          {loading ? (
+            [...Array(8)].map((_, i) => (
+              <div key={i} className="animate-pulse">
+                <div className="aspect-[3/4] bg-stone-200 rounded-2xl mb-4"></div>
+                <div className="h-4 bg-stone-200 rounded w-3/4 mb-2"></div>
+                <div className="h-4 bg-stone-200 rounded w-1/2"></div>
+              </div>
+            ))
+          ) : featuredProducts.length > 0 ? (
+            featuredProducts.map((product, idx) => (
+              <div key={product.id} className={`opacity-0-start delay-${(idx % 4) * 100}`}>
+                <ProductCard product={product} />
+              </div>
+            ))
+          ) : (
+            <div className="col-span-full text-center py-10 text-stone-500">
+              <p>Chưa có sản phẩm nào.</p>
             </div>
-          ))}
+          )}
         </div>
       </section>
 

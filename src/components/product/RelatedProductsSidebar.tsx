@@ -28,7 +28,7 @@ const RelatedProductsSidebar: React.FC<RelatedProductsSidebarProps> = ({ product
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <Link href={`/product/${rp.id}`}>
+                <Link href={`/product/${rp.slug || rp.id}`}>
                   <h4 className="text-sm font-bold text-stone-800 group-hover:text-terracotta transition-colors truncate">{rp.name}</h4>
                 </Link>
                 <div className="flex items-center gap-2 mt-1">
@@ -41,7 +41,7 @@ const RelatedProductsSidebar: React.FC<RelatedProductsSidebarProps> = ({ product
                     </p>
                   )}
                 </div>
-                <Link href={`/product/${rp.id}`} className="inline-block mt-2 text-[10px] uppercase font-bold text-stone-400 hover:text-stone-800 transition-colors">
+                <Link href={`/product/${rp.slug || rp.id}`} className="inline-block mt-2 text-[10px] uppercase font-bold text-stone-400 hover:text-stone-800 transition-colors">
                   Xem chi tiết
                 </Link>
               </div>

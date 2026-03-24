@@ -3,11 +3,13 @@ import React, { useState } from 'react';
 import { useCart } from '@/context/CartContext';
 import { useRouter } from 'next/navigation';
 import { formatCurrency, getCartItemKey, calculateShipping, FREE_SHIPPING_THRESHOLD } from '@/lib/utils';
+import { orderApi } from '@/services/api';
 
 const Checkout: React.FC = () => {
   const { cart, cartTotal, clearCart } = useCart();
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [orderError, setOrderError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -37,16 +39,34 @@ const Checkout: React.FC = () => {
   const shippingFee = calculateShipping(cartTotal);
   const orderTotal = cartTotal + shippingFee;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsProcessing(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsProcessing(false);
+    setOrderError(null);
+
+    try {
+      await orderApi.create({
+        customer_name: formData.name,
+        customer_phone: formData.phone,
+        customer_email: formData.email,
+        address: formData.address,
+        payment_method: formData.paymentMethod,
+        items: cart.map(item => ({
+          variant_id: item.variantId || item.id,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+      });
+
       clearCart();
       alert('Đặt hàng thành công! Cảm ơn bạn đã ủng hộ Minh Thư Handmade.');
       router.push('/');
-    }, 2000);
+    } catch (err) {
+      console.error('Order failed:', err);
+      setOrderError('Đặt hàng thất bại. Vui lòng thử lại sau.');
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   return (
@@ -57,6 +77,11 @@ const Checkout: React.FC = () => {
         {/* Form */}
         <div>
           <h2 className="text-xl font-medium text-stone-900 mb-6">Thông tin giao hàng</h2>
+          {orderError && (
+            <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+              {orderError}
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>

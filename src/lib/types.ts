@@ -27,12 +27,17 @@ export interface Product {
   image: string;
   description: string;
   details: string[];
-  colors: string[]; // Keep for compatibility or filtering
-  variant1: string[]; // Colors/Materials
-  variant2: string[]; // Sizes
+  colors: string[];
+  variant1: string[];
+  variant2: string[];
   htmlDescription?: string;
   rating?: number;
   soldCount?: number;
+  slug?: string;
+  variantId?: string;
+  variantCode?: string;
+  images?: string[];
+  categoryIds?: string[];
 }
 
 export interface CartItem extends Product {
@@ -48,7 +53,14 @@ export interface ChatMessage {
   isThinking?: boolean;
 }
 
-export type Category = 'All' | 'Clothing' | 'Bags' | 'Accessories';
+export type Category = 'All' | string;
+
+export interface CategoryItem {
+  id: string;
+  name: string;
+  slug: string;
+  image?: string;
+}
 
 export interface BlogPost {
   id: string;
@@ -61,4 +73,83 @@ export interface BlogPost {
   image: string;
   isFeatured?: boolean;
   relatedProducts?: string[];
+}
+
+// Backend API response types
+export interface ApiListResponse<T> {
+  total: number;
+  items: T[];
+  limit?: number;
+  skip?: number;
+  category?: { name?: string; image?: string };
+}
+
+export interface BackendVariantItem {
+  _id: string;
+  id: string;
+  name: string;
+  slug: string;
+  code: string;
+  code_format?: string;
+  images: string[];
+  price: number;
+  originalPrice: number;
+  old_price?: number;
+  new_price?: number;
+  attributes?: Array<{
+    name: string;
+    key: string;
+    id: string;
+    value: string;
+    color?: string;
+  }>;
+  product?: {
+    _id: string;
+    name: string;
+    slug: string;
+  };
+  product_id?: string;
+  category_ids?: string[];
+  unit_id?: string;
+  company_id?: string;
+  is_main?: boolean;
+}
+
+export interface BackendProductDetail {
+  id: string;
+  name: string;
+  slug: string;
+  images: string[];
+  originalPrice: number;
+  price: number;
+  description?: string;
+  unit?: string;
+  variant_code: string;
+  code_format?: string;
+  color?: string;
+  color_name?: string;
+  attributes?: Array<{
+    name: string;
+    key: string;
+    id: string;
+    value: string;
+    color?: string;
+  }>;
+  variants: Array<{
+    _id: string;
+    code: string;
+    code_format?: string;
+    attributes: Array<{
+      name: string;
+      key: string;
+      value: string;
+      color?: string;
+    }>;
+    old_price: number;
+    new_price: number;
+    price: number;
+    images: Array<{ file_id: string; path: string }>;
+    is_main?: boolean;
+  }>;
+  category_ids?: string[];
 }

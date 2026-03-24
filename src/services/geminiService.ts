@@ -1,9 +1,29 @@
 import { GoogleGenAI } from "@google/genai";
-import { PRODUCTS } from '@/lib/constants';
+import { productApi } from '@/services/api';
 
 const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY });
 
-const SYSTEM_INSTRUCTION = `
+let cachedProductList: string | null = null;
+
+async function getProductListForAI(): Promise<string> {
+  if (cachedProductList) return cachedProductList;
+  try {
+    const data = await productApi.getAll({ limit: 50 });
+    cachedProductList = JSON.stringify(data.items.map(p => ({
+      id: p.id,
+      name: p.name,
+      price: p.price,
+      category: p.category,
+      description: p.description,
+      colors: p.colors,
+    })));
+    return cachedProductList;
+  } catch {
+    return '[]';
+  }
+}
+
+const getSystemInstruction = (productList: string) => `
 Bạn là "Minh Thư" - một trợ lý ảo thời trang thông minh, thân thiện của cửa hàng "Minh Thư Handmade".
 Phong cách của cửa hàng: Handmade, mộc mạc, tự nhiên (Linen, đũi, gốm, cói), Boho, Vintage, Tối giản.
 
@@ -14,14 +34,7 @@ Nhiệm vụ của bạn:
 4. Nếu khách hỏi sản phẩm không có, hãy khéo léo gợi ý sản phẩm tương tự có trong danh sách.
 
 DANH SÁCH SẢN PHẨM CỦA TIỆM:
-${JSON.stringify(PRODUCTS.map(p => ({ 
-  id: p.id, 
-  name: p.name, 
-  price: p.price, 
-  category: p.category, 
-  description: p.description,
-  colors: p.colors // Include colors for AI context
-})))}
+${productList}
 
 Lưu ý:
 - Trả lời ngắn gọn, súc tích (dưới 150 từ).
@@ -31,6 +44,8 @@ Lưu ý:
 
 export const sendMessageToGemini = async (message: string, history: { role: 'user' | 'model'; text: string }[]) => {
   try {
+    const productList = await getProductListForAI();
+
     const contents = [
       ...history.map(h => ({
         role: h.role,
@@ -43,7 +58,7 @@ export const sendMessageToGemini = async (message: string, history: { role: 'use
       model: 'gemini-3-flash-preview',
       contents,
       config: {
-        systemInstruction: SYSTEM_INSTRUCTION,
+        systemInstruction: getSystemInstruction(productList),
       },
     });
 
