@@ -153,3 +153,66 @@ export interface BackendProductDetail {
   }>;
   category_ids?: string[];
 }
+
+// Order API response types
+export interface OrderResponse {
+  _id: string;
+  code: string;
+  status: string;
+  total: number;
+  customer_name: string;
+  customer_phone: string;
+  customer_email?: string;
+  address?: string;
+  city?: string;
+  district?: string;
+  note?: string;
+  payment_method?: string;
+  items: Array<{
+    variant_id: string;
+    quantity: number;
+    price: number;
+    name?: string;
+    image?: string;
+  }>;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface CartVariant {
+  _id: string;
+  id: string;
+  code: string;
+  name: string;
+  slug: string;
+  price: number;
+  old_price?: number;
+  new_price?: number;
+  images: string[];
+  quantity?: number;
+  stock?: number;
+  is_available?: boolean;
+  attributes?: Array<{
+    name: string;
+    key: string;
+    value: string;
+  }>;
+  product?: {
+    _id: string;
+    name: string;
+    slug: string;
+  };
+}
+
+// News types
+export interface NewsItem {
+  _id: string;
+  title: string;
+  slug?: string;
+  short_des?: string;
+  content?: string;
+  images: Array<{ file_id: string; path: string }>;
+  hot: boolean;
+  views: number;
+  created_at: string;
+}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Facebook, Instagram, Twitter } from 'lucide-react';
+import Image from 'next/image';
 import { LOGO_SRC_NO_BG } from '@/lib/utils';
 
 const Footer: React.FC = () => {
@@ -11,7 +12,7 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           <div>
             <div className="flex items-center gap-2 mb-4">
-               <img src={LOGO_SRC_NO_BG} alt="Minh Thư Handmade" className="h-16 w-16 object-contain" />
+               <Image src={LOGO_SRC_NO_BG} alt="Minh Thư Handmade" width={64} height={64} className="object-contain" />
             </div>
             <p className="text-stone-600 text-sm leading-relaxed max-w-xs">
               Mang đến những sản phẩm thủ công đầy tâm huyết, <br/>

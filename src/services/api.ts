@@ -4,9 +4,10 @@
  * Public APIs tại /client/ — không cần auth
  */
 
-import { Product, CategoryItem, BackendVariantItem, BackendProductDetail, ApiListResponse } from '@/lib/types';
+import { Product, CategoryItem, BackendVariantItem, BackendProductDetail, ApiListResponse, OrderResponse, CartVariant, NewsItem } from '@/lib/types';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5002';
+const COMPANY_ID = process.env.NEXT_PUBLIC_COMPANY_ID || '';
 
 // ==================== BASE CLIENT ====================
 
@@ -15,6 +16,7 @@ async function apiClient<T>(endpoint: string, options?: RequestInit): Promise<T>
   const res = await fetch(url, {
     headers: {
       'Content-Type': 'application/json',
+      ...(COMPANY_ID ? { 'x-company-id': COMPANY_ID } : {}),
       ...options?.headers,
     },
     ...options,
@@ -190,8 +192,8 @@ export const orderApi = {
       quantity: number;
       price: number;
     }>;
-  }): Promise<any> {
-    return apiClient<any>('/client/orders', {
+  }): Promise<OrderResponse> {
+    return apiClient<OrderResponse>('/client/orders', {
       method: 'POST',
       body: JSON.stringify(data),
     });
@@ -201,8 +203,8 @@ export const orderApi = {
    * Validate giỏ hàng — lấy thông tin variant mới nhất
    * POST /client/orders/cart
    */
-  async getCartVariants(cart: Array<{ id: string; quantity: number }>): Promise<any[]> {
-    return apiClient<any[]>('/client/orders/cart', {
+  async getCartVariants(cart: Array<{ id: string; quantity: number }>): Promise<CartVariant[]> {
+    return apiClient<CartVariant[]>('/client/orders/cart', {
       method: 'POST',
       body: JSON.stringify({ cart }),
     });
@@ -212,8 +214,8 @@ export const orderApi = {
    * Tra cứu đơn hàng theo mã
    * GET /client/orders/:code
    */
-  async getByCode(code: string): Promise<any> {
-    return apiClient<any>(`/client/orders/${code}`);
+  async getByCode(code: string): Promise<OrderResponse> {
+    return apiClient<OrderResponse>(`/client/orders/${code}`);
   },
 };
 
@@ -234,5 +236,41 @@ export const addressApi = {
    */
   async getWards(provinceCode: string): Promise<Array<{ id: string; code: string; name: string }>> {
     return apiClient(`/client/ward/${provinceCode}`);
+  },
+};
+
+// ==================== NEWS API ====================
+
+export const newsApi = {
+  /**
+   * Lấy danh sách tin tức
+   * GET /client/news?limit=&skip=&hot=&selects=
+   */
+  async getAll(params?: {
+    limit?: number;
+    skip?: number;
+    hot?: boolean;
+    selects?: string;
+  }): Promise<{ total: number; items: NewsItem[]; current: number; limit: number }> {
+    const searchParams = new URLSearchParams();
+    if (params?.limit) searchParams.set('limit', String(params.limit));
+    if (params?.skip) searchParams.set('skip', String(params.skip));
+    if (params?.hot) searchParams.set('hot', 'true');
+    if (params?.selects) searchParams.set('selects', params.selects);
+    const qs = searchParams.toString();
+    return apiClient(`/client/news${qs ? `?${qs}` : ''}`);
+  },
+
+  /**
+   * Lấy chi tiết tin tức theo slug hoặc id
+   * GET /client/news/:slugOrId?selects=
+   */
+  async getBySlugOrId(slugOrId: string, params?: {
+    selects?: string;
+  }): Promise<NewsItem | null> {
+    const searchParams = new URLSearchParams();
+    if (params?.selects) searchParams.set('selects', params.selects);
+    const qs = searchParams.toString();
+    return apiClient(`/client/news/${slugOrId}${qs ? `?${qs}` : ''}`);
   },
 };

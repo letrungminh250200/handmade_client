@@ -1,7 +1,9 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowLeft, Calendar, Eye, Share2 } from 'lucide-react';
-import { serverNewsApi, resolveImageUrl, NewsItem } from '@/services/server-api';
+import { serverNewsApi, resolveImageUrl } from '@/services/server-api';
+import { NewsItem } from '@/lib/types';
 
 function formatDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('vi-VN', {
@@ -18,12 +20,12 @@ function getNewsImage(news: NewsItem): string {
   return resolveImageUrl(undefined);
 }
 
-export default async function NewsDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
+export default async function NewsDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
 
   let post: NewsItem | null;
   try {
-    post = await serverNewsApi.getBySlugOrId(id);
+    post = await serverNewsApi.getBySlugOrId(slug);
   } catch {
     notFound();
   }
@@ -45,7 +47,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
       <div className="relative h-[70vh] w-full overflow-hidden">
         <div className="absolute inset-0 bg-stone-900/30 z-10" />
         <div className="absolute inset-0 bg-gradient-to-t from-stone-900/80 via-stone-900/20 to-transparent z-[15]" />
-        <img src={heroImage} alt={post.title} className="w-full h-full object-cover" />
+        <Image src={heroImage} alt={post.title} fill className="object-cover" priority />
 
         <div className="absolute inset-0 z-20 flex flex-col justify-end pb-32 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto">
           <Link href="/news" className="text-white/80 hover:text-white flex items-center gap-2 mb-8 w-fit transition-all hover:-translate-x-1">
@@ -106,11 +108,12 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
                 <div className="space-y-8">
                   {otherPosts.map(op => (
                     <Link key={op._id} href={`/news/${op.slug || op._id}`} className="block group">
-                      <div className="aspect-[16/9] rounded-2xl overflow-hidden mb-4 shadow-sm">
-                        <img
+                      <div className="relative aspect-[16/9] rounded-2xl overflow-hidden mb-4 shadow-sm">
+                        <Image
                           src={getNewsImage(op)}
                           alt={op.title}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                          fill
+                          className="object-cover group-hover:scale-110 transition-transform duration-700"
                         />
                       </div>
                       <h4 className="font-serif font-bold text-stone-800 group-hover:text-terracotta transition-colors leading-snug line-clamp-2">

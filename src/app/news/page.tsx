@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight, Calendar, Eye } from 'lucide-react';
-import { serverNewsApi, resolveImageUrl, NewsItem } from '@/services/server-api';
+import { serverNewsApi, resolveImageUrl } from '@/services/server-api';
+import { NewsItem } from '@/lib/types';
 
 function formatDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('vi-VN', {

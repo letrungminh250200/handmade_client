@@ -4,9 +4,10 @@
  * Backend URL lấy từ API_URL (không phải NEXT_PUBLIC_)
  */
 
-import { Product, CategoryItem, BackendVariantItem, BackendProductDetail, ApiListResponse } from '@/lib/types';
+import { Product, CategoryItem, BackendVariantItem, BackendProductDetail, ApiListResponse, NewsItem } from '@/lib/types';
 
 const API_URL = process.env.API_URL || 'http://localhost:5002';
+const COMPANY_ID = process.env.COMPANY_ID || '';
 
 // ==================== BASE CLIENT ====================
 
@@ -15,6 +16,7 @@ async function serverFetch<T>(endpoint: string, options?: RequestInit): Promise<
   const res = await fetch(url, {
     headers: {
       'Content-Type': 'application/json',
+      ...(COMPANY_ID ? { 'x-company-id': COMPANY_ID } : {}),
       ...options?.headers,
     },
     ...options,
@@ -193,33 +195,36 @@ export const serverAddressApi = {
 
 // ==================== NEWS API ====================
 
-export interface NewsItem {
-  _id: string;
-  title: string;
-  slug?: string;
-  short_des?: string;
-  content?: string;
-  images: Array<{ file_id: string; path: string }>;
-  hot: boolean;
-  views: number;
-  created_at: string;
-}
-
 export const serverNewsApi = {
+  /**
+   * Lấy danh sách tin tức
+   * GET /client/news?limit=&skip=&hot=&selects=
+   */
   async getAll(params?: {
     limit?: number;
     skip?: number;
     hot?: boolean;
-  }): Promise<{ total: number; items: NewsItem[] }> {
+    selects?: string;
+  }): Promise<{ total: number; items: NewsItem[]; current: number; limit: number }> {
     const searchParams = new URLSearchParams();
     if (params?.limit) searchParams.set('limit', String(params.limit));
     if (params?.skip) searchParams.set('skip', String(params.skip));
     if (params?.hot) searchParams.set('hot', 'true');
+    if (params?.selects) searchParams.set('selects', params.selects);
     const qs = searchParams.toString();
     return serverFetch(`/client/news${qs ? `?${qs}` : ''}`, { next: { revalidate: 60 } });
   },
 
-  async getBySlugOrId(slugOrId: string): Promise<NewsItem | null> {
-    return serverFetch(`/client/news/${slugOrId}`, { next: { revalidate: 60 } });
+  /**
+   * Lấy chi tiết tin tức theo slug hoặc id
+   * GET /client/news/:slugOrId?selects=
+   */
+  async getBySlugOrId(slugOrId: string, params?: {
+    selects?: string;
+  }): Promise<NewsItem | null> {
+    const searchParams = new URLSearchParams();
+    if (params?.selects) searchParams.set('selects', params.selects);
+    const qs = searchParams.toString();
+    return serverFetch(`/client/news/${slugOrId}${qs ? `?${qs}` : ''}`, { next: { revalidate: 60 } });
   },
 };

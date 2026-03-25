@@ -3,8 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import { ArrowRight, PenTool, BookOpen } from 'lucide-react';
 import Link from 'next/link';
-import { BLOG_POSTS } from '@/lib/constants';
+import Image from 'next/image';
 import { Product } from '@/lib/types';
+import type { HomeNewsItem } from '@/app/page';
 import ProductCard from '@/components/ProductCard';
 import { LOGO_SRC } from '@/lib/utils';
 
@@ -20,10 +21,10 @@ const SplitText = ({ text, className }: { text: string, className?: string }) =>
 
 interface HomeClientProps {
   featuredProducts: Product[];
+  latestNews: HomeNewsItem[];
 }
 
-const HomeClient: React.FC<HomeClientProps> = ({ featuredProducts }) => {
-  const featuredPosts = BLOG_POSTS.slice(0, 3);
+const HomeClient: React.FC<HomeClientProps> = ({ featuredProducts, latestNews }) => {
   const [offsetY, setOffsetY] = useState(0);
 
   useEffect(() => {
@@ -51,7 +52,7 @@ const HomeClient: React.FC<HomeClientProps> = ({ featuredProducts }) => {
     <div className="flex flex-col min-h-screen overflow-x-hidden bg-[#fafaf9]">
       <section className="relative h-screen w-full overflow-hidden flex items-center justify-center">
         <div className="absolute inset-0 will-change-transform scale-110" style={{ transform: `translateY(${offsetY * 0.4}px) scale(${1.1 - offsetY * 0.0005})` }}>
-          <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070&auto=format&fit=crop" alt="Hero background" className="w-full h-full object-cover" />
+          <Image src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=2070&auto=format&fit=crop" alt="Hero background" fill className="object-cover" priority />
           <div className="absolute inset-0 bg-stone-900/20" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#fafaf9] via-transparent to-transparent h-[120%]" />
         </div>
@@ -59,7 +60,7 @@ const HomeClient: React.FC<HomeClientProps> = ({ featuredProducts }) => {
         <div className="relative z-10 flex flex-col justify-center items-center text-center px-4 mt-10">
           <div className="max-w-5xl space-y-8">
             <div className="flex justify-center mb-8 animate-fade-in-up">
-               <img src={LOGO_SRC} alt="Logo" className="h-28 w-28 md:h-36 md:w-36 object-contain drop-shadow-2xl animate-float" />
+               <Image src={LOGO_SRC} alt="Logo" width={144} height={144} className="h-28 w-28 md:h-36 md:w-36 object-contain drop-shadow-2xl animate-float" />
             </div>
             <h1 className="text-6xl md:text-8xl lg:text-9xl font-serif text-white mb-6 leading-[0.9] drop-shadow-lg mix-blend-overlay opacity-90">
               <SplitText text="Chậm lại" /> <br/>
@@ -109,7 +110,7 @@ const HomeClient: React.FC<HomeClientProps> = ({ featuredProducts }) => {
           </div>
           <div className="relative opacity-0-start delay-200 perspective-1000">
             <div className="aspect-[3/4] rounded-full overflow-hidden border border-stone-200 relative z-10">
-              <img src="/product-banner.webp" alt="Craft" className="w-full h-full object-cover" />
+              <Image src="/product-banner.webp" alt="Craft" fill className="object-cover" />
             </div>
           </div>
         </div>
@@ -149,10 +150,10 @@ const HomeClient: React.FC<HomeClientProps> = ({ featuredProducts }) => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-           {featuredPosts.map((post, idx) => (
-             <Link key={idx} href={`/news/${post.id}`} className={`group flex flex-col opacity-0-start delay-${idx * 150}`}>
-                <div className="overflow-hidden rounded-2xl mb-6 shadow-sm">
-                  <img src={post.image} alt={post.title} className="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-105" />
+           {latestNews.length > 0 ? latestNews.map((post, idx) => (
+             <Link key={post.id} href={`/news/${post.slug}`} className={`group flex flex-col opacity-0-start delay-${idx * 150}`}>
+                <div className="relative overflow-hidden rounded-2xl mb-6 shadow-sm aspect-[4/3]">
+                  <Image src={post.image} alt={post.title} fill className="object-cover transition-transform duration-500 group-hover:scale-105" />
                 </div>
                 <div className="flex flex-col flex-1">
                   <div className="text-xs text-stone-400 mb-3 tracking-widest uppercase">{post.date}</div>
@@ -164,7 +165,11 @@ const HomeClient: React.FC<HomeClientProps> = ({ featuredProducts }) => {
                   </p>
                 </div>
              </Link>
-           ))}
+           )) : (
+             <div className="col-span-full text-center py-10 text-stone-500">
+               <p>Chưa có bài viết nào.</p>
+             </div>
+           )}
         </div>
         <div className="text-center mt-20 opacity-0-start">
            <Link href="/news" className="inline-flex items-center gap-2 px-8 py-3 border-b-2 border-stone-800 text-stone-800 font-serif font-bold hover:text-terracotta hover:border-terracotta transition-all">

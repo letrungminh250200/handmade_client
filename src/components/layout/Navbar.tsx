@@ -2,6 +2,7 @@
 import React from 'react';
 import { ShoppingBag, Search, Menu } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { LOGO_SRC } from '@/lib/utils';
@@ -18,9 +19,11 @@ const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-24 md:h-28 transition-all duration-300">
           <Link href="/" className="flex-shrink-0 group py-2">
-            <img 
+            <Image 
               src={LOGO_SRC} 
               alt="Minh Thư Handmade Logo" 
+              width={96}
+              height={96}
               className="h-20 w-auto md:h-24 object-contain group-hover:scale-105 transition-transform duration-300"
             />
           </Link>
