@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Star, MessageSquare, User, Phone } from 'lucide-react';
 import { Review } from '@/lib/types';
 
@@ -9,34 +9,31 @@ interface ProductReviewsProps {
 
 const ProductReviews: React.FC<ProductReviewsProps> = ({ productId }) => {
   // Component tự quản lý state và logic
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [newReview, setNewReview] = useState({ userName: '', userPhone: '', rating: 5, comment: '' });
-  const [isReviewing, setIsReviewing] = useState(false);
-
-  // Load reviews khi component mount
-  useEffect(() => {
+  const [reviews, setReviews] = useState<Review[]>(() => {
+    if (typeof window === 'undefined') return [];
     const REVIEWS_KEY = `minhthu_reviews_${productId}`;
     const storedReviews = localStorage.getItem(REVIEWS_KEY);
-    
     if (storedReviews) {
-      setReviews(JSON.parse(storedReviews));
-    } else {
-      // Mock reviews
-      const mockReviews: Review[] = [
-        { id: 'r1', productId, userName: 'Hương Giang', rating: 5, comment: 'Sản phẩm rất đẹp, đóng gói cẩn thận. Mình rất ưng ý!', date: '12/05/2024' },
-        { id: 'r2', productId, userName: 'Minh Quân', rating: 4, comment: 'Chất liệu vải rất thích, tuy nhiên giao hàng hơi chậm một chút.', date: '10/05/2024' }
-      ];
-      setReviews(mockReviews);
-      localStorage.setItem(REVIEWS_KEY, JSON.stringify(mockReviews));
+      return JSON.parse(storedReviews);
     }
-
-    // Load user profile
+    const mockReviews: Review[] = [
+      { id: 'r1', productId, userName: 'Hương Giang', rating: 5, comment: 'Sản phẩm rất đẹp, đóng gói cẩn thận. Mình rất ưng ý!', date: '12/05/2024' },
+      { id: 'r2', productId, userName: 'Minh Quân', rating: 4, comment: 'Chất liệu vải rất thích, tuy nhiên giao hàng hơi chậm một chút.', date: '10/05/2024' }
+    ];
+    localStorage.setItem(REVIEWS_KEY, JSON.stringify(mockReviews));
+    return mockReviews;
+  });
+  const [newReview, setNewReview] = useState(() => {
+    const base = { userName: '', userPhone: '', rating: 5, comment: '' };
+    if (typeof window === 'undefined') return base;
     const savedProfile = localStorage.getItem('minhthu_user_profile');
     if (savedProfile) {
       const { userName, userPhone } = JSON.parse(savedProfile);
-      setNewReview(prev => ({ ...prev, userName, userPhone }));
+      return { ...base, userName, userPhone };
     }
-  }, [productId]);
+    return base;
+  });
+  const [isReviewing, setIsReviewing] = useState(false);
 
   // Tính toán average rating trong component
   const averageRating = reviews.length > 0 
@@ -208,7 +205,7 @@ const ProductReviews: React.FC<ProductReviewsProps> = ({ productId }) => {
                     <span className="text-xs text-stone-400 font-medium bg-stone-50 px-3 py-1 rounded-full">{rev.date}</span>
                   </div>
                   <div className="pl-16">
-                    <p className="text-stone-600 leading-relaxed italic text-lg">"{rev.comment}"</p>
+                    <p className="text-stone-600 leading-relaxed italic text-lg">&quot;{rev.comment}&quot;</p>
                   </div>
                   <div className="h-px bg-stone-100 w-full mt-10"></div>
                 </div>

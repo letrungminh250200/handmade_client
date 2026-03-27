@@ -1,7 +1,10 @@
 import Link from 'next/link';
-import { ArrowRight, Calendar, Eye } from 'lucide-react';
+import Image from 'next/image';
+import { ArrowRight, Calendar, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
 import { serverNewsApi, resolveImageUrl } from '@/services/server-api';
 import { NewsItem } from '@/lib/types';
+
+const ITEMS_PER_PAGE = 9;
 
 function formatDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('vi-VN', {
@@ -22,19 +25,102 @@ function getNewsLink(news: NewsItem): string {
   return `/news/${news.slug || news._id}`;
 }
 
-export default async function NewsPage() {
+function Pagination({ currentPage, totalPages }: { currentPage: number; totalPages: number }) {
+  if (totalPages <= 1) return null;
+
+  const pages: (number | '...')[] = [];
+  if (totalPages <= 7) {
+    for (let i = 1; i <= totalPages; i++) pages.push(i);
+  } else {
+    pages.push(1);
+    if (currentPage > 3) pages.push('...');
+    const start = Math.max(2, currentPage - 1);
+    const end = Math.min(totalPages - 1, currentPage + 1);
+    for (let i = start; i <= end; i++) pages.push(i);
+    if (currentPage < totalPages - 2) pages.push('...');
+    pages.push(totalPages);
+  }
+
+  return (
+    <nav className="flex items-center justify-center gap-2 mt-16" aria-label="Phân trang">
+      {currentPage > 1 ? (
+        <Link
+          href={`/news?page=${currentPage - 1}`}
+          className="flex items-center gap-1 px-4 py-2.5 text-sm font-medium text-stone-600 bg-white border border-stone-200 rounded-xl hover:bg-stone-50 hover:text-terracotta transition-all"
+        >
+          <ChevronLeft className="w-4 h-4" /> Trước
+        </Link>
+      ) : (
+        <span className="flex items-center gap-1 px-4 py-2.5 text-sm font-medium text-stone-300 bg-stone-50 border border-stone-100 rounded-xl cursor-not-allowed">
+          <ChevronLeft className="w-4 h-4" /> Trước
+        </span>
+      )}
+
+      <div className="flex items-center gap-1">
+        {pages.map((page, i) =>
+          page === '...' ? (
+            <span key={`dots-${i}`} className="px-2 py-2 text-stone-400">
+              …
+            </span>
+          ) : page === currentPage ? (
+            <span
+              key={page}
+              className="w-10 h-10 flex items-center justify-center text-sm font-bold text-white bg-terracotta rounded-xl shadow-sm"
+            >
+              {page}
+            </span>
+          ) : (
+            <Link
+              key={page}
+              href={`/news?page=${page}`}
+              className="w-10 h-10 flex items-center justify-center text-sm font-medium text-stone-600 bg-white border border-stone-200 rounded-xl hover:bg-stone-50 hover:text-terracotta transition-all"
+            >
+              {page}
+            </Link>
+          ),
+        )}
+      </div>
+
+      {currentPage < totalPages ? (
+        <Link
+          href={`/news?page=${currentPage + 1}`}
+          className="flex items-center gap-1 px-4 py-2.5 text-sm font-medium text-stone-600 bg-white border border-stone-200 rounded-xl hover:bg-stone-50 hover:text-terracotta transition-all"
+        >
+          Sau <ChevronRight className="w-4 h-4" />
+        </Link>
+      ) : (
+        <span className="flex items-center gap-1 px-4 py-2.5 text-sm font-medium text-stone-300 bg-stone-50 border border-stone-100 rounded-xl cursor-not-allowed">
+          Sau <ChevronRight className="w-4 h-4" />
+        </span>
+      )}
+    </nav>
+  );
+}
+
+export default async function NewsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const resolvedParams = await searchParams;
+  const currentPage = Math.max(1, parseInt(resolvedParams.page || '1') || 1);
+  const skip = (currentPage - 1) * ITEMS_PER_PAGE;
+
   let newsList: NewsItem[] = [];
   let total = 0;
   try {
-    const data = await serverNewsApi.getAll({ limit: 20 });
+    const data = await serverNewsApi.getAll({ limit: ITEMS_PER_PAGE, skip });
     newsList = data.items || [];
     total = data.total || 0;
   } catch {
     // fallback
   }
 
-  const featuredPost = newsList.find(n => n.hot);
-  const otherPosts = newsList.filter(n => n !== featuredPost);
+  const totalPages = Math.ceil(total / ITEMS_PER_PAGE);
+
+  // Only show featured post on page 1
+  const featuredPost = currentPage === 1 ? newsList.find(n => n.hot) : undefined;
+  const otherPosts = featuredPost ? newsList.filter(n => n !== featuredPost) : newsList;
 
   return (
     <div className="min-h-screen bg-stone-50">
@@ -53,21 +139,22 @@ export default async function NewsPage() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        {/* Featured Post */}
+        {/* Featured Post — only on page 1 */}
         {featuredPost && (
           <div className="mb-20">
             <Link
               href={getNewsLink(featuredPost)}
               className="group grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-white rounded-3xl p-6 shadow-sm border border-stone-100 hover:shadow-xl transition-all duration-300"
             >
-              <div className="aspect-[16/9] md:aspect-[4/3] rounded-2xl overflow-hidden relative">
-                <img
+              <div className="relative aspect-[16/9] md:aspect-[4/3] rounded-2xl overflow-hidden">
+                <Image
                   src={getNewsImage(featuredPost)}
                   alt={featuredPost.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 {featuredPost.hot && (
-                  <span className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 text-xs font-bold uppercase tracking-wider text-terracotta rounded-full">
+                  <span className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 text-xs font-bold uppercase tracking-wider text-terracotta rounded-full z-10">
                     Nổi bật
                   </span>
                 )}
@@ -108,11 +195,12 @@ export default async function NewsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
           {otherPosts.map((post) => (
             <div key={post._id} className="group flex flex-col h-full">
-              <div className="aspect-[3/2] rounded-2xl overflow-hidden mb-6 relative">
-                <img
+              <div className="relative aspect-[3/2] rounded-2xl overflow-hidden mb-6">
+                <Image
                   src={getNewsImage(post)}
                   alt={post.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors" />
               </div>
@@ -141,6 +229,16 @@ export default async function NewsPage() {
             </div>
           ))}
         </div>
+
+        {/* Pagination */}
+        <Pagination currentPage={currentPage} totalPages={totalPages} />
+
+        {/* Page info */}
+        {total > 0 && (
+          <p className="text-center text-sm text-stone-400 mt-6">
+            Trang {currentPage} / {totalPages} — {total} bài viết
+          </p>
+        )}
       </div>
     </div>
   );

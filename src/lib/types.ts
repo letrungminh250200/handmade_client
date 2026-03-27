@@ -40,10 +40,9 @@ export interface Product {
   categoryIds?: string[];
 }
 
-export interface CartItem extends Product {
+export interface CartItem {
+  id: string;       // variant _id
   quantity: number;
-  selectedVariant1?: string;
-  selectedVariant2?: string;
 }
 
 export interface ChatMessage {
@@ -215,4 +214,40 @@ export interface NewsItem {
   hot: boolean;
   views: number;
   created_at: string;
+}
+
+// Enriched cart item from POST /client/orders/cart API
+export interface EnrichedCartItem {
+  variant_id?: string;
+  _id?: string;
+  price: number;
+  origin_price?: number;
+  quantity: number;
+  image?: string;
+  product?: { name: string; slug: string };
+  attributes?: { key: string; name: string; code?: string }[];
+}
+
+// Location select option (provinces, districts)
+export interface LocationOption {
+  code: string;
+  name: string;
+}
+
+// Order creation request — follows web_view/types/api.ts CreateOrderRequest
+export interface CreateOrderRequest {
+  name: string;
+  phone: string;
+  email?: string;
+  address: string;
+  city: string;
+  district: string;
+  note?: string;
+  payment_method?: string;
+  shipping_method?: string;
+  line_items: EnrichedCartItem[];
+  shipping: number;
+  total: number;
+  original: number;
+  discount: number;
 }

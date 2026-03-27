@@ -1,9 +1,10 @@
 import { serverProductApi, serverCategoryApi } from '@/services/server-api';
 import ShopClient from '@/components/shop/ShopClient';
+import { Product, CategoryItem } from '@/lib/types';
 
 export default async function ShopPage() {
-  let products = { total: 0, items: [] as any[] };
-  let categories = [] as any[];
+  let products = { total: 0, items: [] as Product[] };
+  let categories = [] as CategoryItem[];
 
   try {
     [products, categories] = await Promise.all([

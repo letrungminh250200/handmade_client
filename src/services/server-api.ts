@@ -150,25 +150,17 @@ export const serverCategoryApi = {
 };
 
 export const serverOrderApi = {
-  async create(data: {
-    customer_name: string;
-    customer_phone: string;
-    customer_email?: string;
-    address?: string;
-    city?: string;
-    district?: string;
-    note?: string;
-    payment_method?: string;
-    items: Array<{
-      variant_id: string;
-      quantity: number;
-      price: number;
-    }>;
-  }): Promise<unknown> {
-    return serverFetch<unknown>('/client/orders', {
+  async create(data: Record<string, unknown>): Promise<{ data: Record<string, unknown>; statusCode: number }> {
+    const res = await fetch(`${API_URL}/client/orders`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(COMPANY_ID ? { 'x-company-id': COMPANY_ID } : {}),
+      },
       body: JSON.stringify(data),
     });
+    const json = await res.json();
+    return { data: json, statusCode: res.status };
   },
 
   async getCartVariants(cart: Array<{ id: string; quantity: number }>): Promise<unknown[]> {

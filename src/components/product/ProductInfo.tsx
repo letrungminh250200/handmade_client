@@ -33,7 +33,7 @@ const ProductInfo: React.FC<ProductInfoProps> = ({
       setError('Vui lòng chọn kích thước');
       return;
     }
-    addToCart({ product, quantity, variant1: selectedVariant1, variant2: selectedVariant2 });
+    addToCart(product.variantId || product.id, quantity);
     setError('');
   };
 

@@ -31,7 +31,20 @@ const DEFAULT_MESSAGE: ChatMessage = { id: '0', role: 'model', text: 'Chào bạ
 
 const AIStylist: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([DEFAULT_MESSAGE]);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => {
+    if (typeof window === 'undefined') return [DEFAULT_MESSAGE];
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const { messages: saved, timestamp } = JSON.parse(stored);
+        if (Date.now() - timestamp < CHAT_TTL && saved?.length > 0) {
+          return saved;
+        }
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    } catch { /* ignore */ }
+    return [DEFAULT_MESSAGE];
+  });
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -56,37 +69,28 @@ const AIStylist: React.FC = () => {
     if (isOpen || allProductsRef.current.length < 2) return;
     const shuffled = [...allProductsRef.current].sort(() => Math.random() - 0.5);
     setSuggestions(shuffled.slice(0, 2));
-    if(showSuggestions == false) setTimeout(() => setShowSuggestions(true), 2000);
+    if(showSuggestions === false) setTimeout(() => setShowSuggestions(true), 2000);
     
     // Auto-hide after 8 seconds
     if (suggestTimer.current) clearTimeout(suggestTimer.current);
     // suggestTimer.current = setTimeout(() => setShowSuggestions(false), 8000);
-  }, [isOpen]);
+  }, [isOpen, showSuggestions]);
 
   useEffect(() => {
     pickRandom();
-    return () => { if (suggestTimer.current) clearTimeout(suggestTimer.current); };
+    const timer = suggestTimer.current;
+    return () => { if (timer) clearTimeout(timer); };
   }, [pathname, pickRandom]);
 
-  // Hide suggestions when chat opens
-  useEffect(() => {
-    if (isOpen) setShowSuggestions(false);
-  }, [isOpen]);
-
-  // Load history from localStorage on mount (3-day TTL)
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const { messages: saved, timestamp } = JSON.parse(stored);
-        if (Date.now() - timestamp < CHAT_TTL && saved?.length > 0) {
-          setMessages(saved);
-        } else {
-          localStorage.removeItem(STORAGE_KEY);
-        }
-      }
-    } catch { /* ignore */ }
+  // Hide suggestions when chat opens - use event handler instead of effect
+  const handleToggleOpen = useCallback(() => {
+    setIsOpen(prev => {
+      if (!prev === true) setSuggestions([]);
+      return !prev;
+    });
   }, []);
+
+
 
   // Save to localStorage on change (skip initial)
   const isFirstRender = useRef(true);
@@ -167,7 +171,7 @@ const AIStylist: React.FC = () => {
         </div>
       )}
 
-      <button onClick={() => setIsOpen(!isOpen)} className={`fixed bottom-6 right-6 z-40 p-4 rounded-full shadow-lg transition-all ${isOpen ? 'bg-stone-200 text-stone-600 rotate-90' : 'bg-stone-600 text-white'}`}>
+      <button onClick={handleToggleOpen} className={`fixed bottom-6 right-6 z-40 p-4 rounded-full shadow-lg transition-all ${isOpen ? 'bg-stone-200 text-stone-600 rotate-90' : 'bg-stone-600 text-white'}`}>
         {isOpen ? <X className="h-6 w-6" /> : <Sparkles className="h-6 w-6" />}
       </button>
 

@@ -1,16 +1,52 @@
 "use client";
-import React from 'react';
-import { X, Minus, Plus, Trash2 } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { X, Minus, Plus, Trash2, Loader2 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import Link from 'next/link';
-import { getCartItemKey, formatCurrency } from '@/lib/utils';
+import { formatCurrency } from '@/lib/utils';
+import { resolveImageUrl } from '@/services/api';
+import { EnrichedCartItem } from '@/lib/types';
+
+
 
 const CartSidebar: React.FC = () => {
-  const { cart, isCartOpen, setIsCartOpen, removeFromCart, updateQuantity, cartTotal } = useCart();
+  const { cart, isCartOpen, setIsCartOpen, removeFromCart, updateQuantity } = useCart();
+  const [enrichedCart, setEnrichedCart] = useState<EnrichedCartItem[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [cartTotal, setCartTotal] = useState(0);
+
+  // Fetch enriched cart data from backend API whenever cart changes
+  useEffect(() => {
+    if (!isCartOpen || cart.length === 0) {
+      setEnrichedCart([]);
+      setCartTotal(0);
+      return;
+    }
+
+    const fetchCart = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch('/api/orders/cart', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ cart }),
+        });
+        const { data } = await res.json();
+        if (Array.isArray(data)) {
+          setEnrichedCart(data);
+          setCartTotal(data.reduce((sum: number, item: EnrichedCartItem) => sum + (item.price * item.quantity), 0));
+        }
+      } catch (error) {
+        console.error('Failed to fetch cart data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCart();
+  }, [cart, isCartOpen]);
 
   if (!isCartOpen) return null;
-
-
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden">
@@ -40,64 +76,75 @@ const CartSidebar: React.FC = () => {
                   Tiếp tục mua sắm
                 </button>
               </div>
+            ) : loading ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="h-8 w-8 animate-spin text-stone-400" />
+              </div>
             ) : (
               <ul className="space-y-6">
-                {cart.map((item) => {
-                  const uniqueId = getCartItemKey(item);
-                  return (
-                    <li key={uniqueId} className="flex py-2 border-b border-stone-50 pb-6 last:border-0">
-                      <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-stone-200">
-                        <img
-                          src={item.image}
-                          alt={item.name}
-                          className="h-full w-full object-cover object-center"
-                        />
-                      </div>
+                {enrichedCart.map((item) => (
+                  <li key={item.variant_id || item._id} className="flex py-2 border-b border-stone-50 pb-6 last:border-0">
+                    <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-stone-200">
+                      <img
+                        src={item.image ? resolveImageUrl(item.image) : resolveImageUrl(undefined)}
+                        alt={item.product?.name || ''}
+                        className="h-full w-full object-cover object-center"
+                      />
+                    </div>
 
-                      <div className="ml-4 flex flex-1 flex-col">
-                        <div>
-                          <div className="flex justify-between text-base font-medium text-stone-900">
-                            <h3>
-                              <Link href={`/product/${item.id}`} onClick={() => setIsCartOpen(false)}>{item.name}</Link>
-                            </h3>
-                            <p className="ml-4">{formatCurrency(item.price * item.quantity)}</p>
-                          </div>
-                          <div className="mt-1 text-sm text-stone-500 flex flex-wrap gap-x-3">
-                            {item.selectedVariant1 && <span>Màu: <span className="text-stone-700 font-medium">{item.selectedVariant1}</span></span>}
-                            {item.selectedVariant2 && <span>Size: <span className="text-stone-700 font-medium">{item.selectedVariant2}</span></span>}
-                          </div>
+                    <div className="ml-4 flex flex-1 flex-col">
+                      <div>
+                        <div className="flex justify-between text-base font-medium text-stone-900">
+                          <h3>
+                            <Link href={`/${item.product?.slug || ''}`} onClick={() => setIsCartOpen(false)}>
+                              {item.product?.name || ''}
+                            </Link>
+                          </h3>
+                          <p className="ml-4">{formatCurrency(item.price * item.quantity)}</p>
                         </div>
-                        <div className="flex flex-1 items-end justify-between text-sm mt-4">
-                          <div className="flex items-center border border-stone-200 rounded-lg">
-                              <button 
-                                  onClick={() => updateQuantity(uniqueId, item.quantity - 1)}
-                                  className="p-1 hover:bg-stone-100 rounded-l-lg"
-                                  disabled={item.quantity <= 1}
-                              >
-                                  <Minus className="h-4 w-4 text-stone-500" />
-                              </button>
-                              <span className="px-3 text-stone-600 min-w-[1.5rem] text-center font-bold">{item.quantity}</span>
-                              <button 
-                                  onClick={() => updateQuantity(uniqueId, item.quantity + 1)}
-                                  className="p-1 hover:bg-stone-100 rounded-r-lg"
-                              >
-                                  <Plus className="h-4 w-4 text-stone-500" />
-                              </button>
-                          </div>
-
-                          <button
-                            type="button"
-                            onClick={() => removeFromCart(uniqueId)}
-                            className="text-stone-400 hover:text-red-500 transition-colors flex items-center gap-1"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                            <span className="text-xs">Xóa</span>
-                          </button>
+                        <div className="mt-1 text-sm text-stone-500 flex flex-wrap gap-x-3">
+                          {item.attributes?.map((attr: { key: string; name: string }) => (
+                            <span key={attr.key}>
+                              {attr.key}: <span className="text-stone-700 font-medium">{attr.name}</span>
+                            </span>
+                          ))}
                         </div>
+                        {item.origin_price && item.origin_price > item.price && (
+                          <div className="mt-1 text-xs text-stone-400 line-through">
+                            {formatCurrency(item.origin_price)}
+                          </div>
+                        )}
                       </div>
-                    </li>
-                  );
-                })}
+                      <div className="flex flex-1 items-end justify-between text-sm mt-4">
+                        <div className="flex items-center border border-stone-200 rounded-lg">
+                            <button 
+                                onClick={() => updateQuantity(item.variant_id || item._id || '', item.quantity - 1)}
+                                className="p-1 hover:bg-stone-100 rounded-l-lg"
+                                disabled={item.quantity <= 1}
+                            >
+                                <Minus className="h-4 w-4 text-stone-500" />
+                            </button>
+                            <span className="px-3 text-stone-600 min-w-[1.5rem] text-center font-bold">{item.quantity}</span>
+                            <button 
+                                onClick={() => updateQuantity(item.variant_id || item._id || '', item.quantity + 1)}
+                                className="p-1 hover:bg-stone-100 rounded-r-lg"
+                            >
+                                <Plus className="h-4 w-4 text-stone-500" />
+                            </button>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => removeFromCart(item.variant_id || item._id || '')}
+                          className="text-stone-400 hover:text-red-500 transition-colors flex items-center gap-1"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                          <span className="text-xs">Xóa</span>
+                        </button>
+                      </div>
+                    </div>
+                  </li>
+                ))}
               </ul>
             )}
           </div>

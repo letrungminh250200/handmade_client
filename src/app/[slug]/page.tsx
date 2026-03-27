@@ -2,6 +2,8 @@ import { notFound } from 'next/navigation';
 import { serverProductApi, resolveImageUrl } from '@/services/server-api';
 import { Product, BackendProductDetail } from '@/lib/types';
 import ProductDetailClient from '@/components/product/ProductDetailClient';
+import type { Metadata } from 'next';
+import { SITE_URL, createProductJsonLd, createBreadcrumbJsonLd, createProductMetadata, JsonLdScript } from '@/lib/seo';
 
 function stripHtmlTags(html: string): string {
   return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
@@ -58,6 +60,23 @@ function mapDetailToProduct(detail: BackendProductDetail): Product {
   };
 }
 
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  try {
+    const detail = await serverProductApi.getBySlug(slug);
+    const product = mapDetailToProduct(detail);
+    return createProductMetadata({
+      name: product.name,
+      description: product.description,
+      slug: product.slug,
+      id: product.id,
+      images: product.images,
+    });
+  } catch {
+    return { title: 'Sản Phẩm' };
+  }
+}
+
 export default async function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
@@ -85,11 +104,32 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
     }
   }
 
+  const productSlug = product.slug || product.id;
+  const productJsonLd = createProductJsonLd({
+    name: product.name,
+    description: product.description,
+    images: product.images,
+    price: product.price,
+    sku: detail.variant_code || detail.id,
+    slug: productSlug,
+  });
+  const breadcrumbJsonLd = createBreadcrumbJsonLd([
+    { name: 'Trang chủ', url: SITE_URL },
+    { name: 'Sản Phẩm', url: `${SITE_URL}/shop` },
+    { name: product.name, url: `${SITE_URL}/${productSlug}` },
+  ]);
+
   return (
-    <ProductDetailClient
-      product={product}
-      variantGroups={variantGroups}
-      relatedProducts={relatedProducts}
-    />
+    <>
+      <JsonLdScript data={productJsonLd} />
+      <JsonLdScript data={breadcrumbJsonLd} />
+      <ProductDetailClient
+        product={product}
+        variantGroups={variantGroups}
+        relatedProducts={relatedProducts}
+        variants={detail.variants || []}
+        currentVariantId={detail.id}
+      />
+    </>
   );
 }

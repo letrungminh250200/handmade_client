@@ -6,6 +6,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import CartSidebar from "@/components/layout/CartSidebar";
 import AIStylist from "@/components/layout/AIStylist";
+import { globalMetadata, createWebsiteJsonLd, JsonLdScript } from "@/lib/seo";
 
 const beVietnamPro = Be_Vietnam_Pro({
   weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
@@ -22,18 +23,20 @@ const lora = Lora({
   display: 'swap',
 });
 
-export const metadata: Metadata = {
-  title: "Minh Thư Handmade - Thời Trang Thủ Công",
-  description: "Cửa hàng thời trang handmade trực tuyến Minh Thư. Phong cách tối giản, tự nhiên. Tích hợp trợ lý ảo AI tư vấn phối đồ.",
-};
+export const metadata: Metadata = globalMetadata;
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const websiteJsonLd = createWebsiteJsonLd();
+
   return (
     <html lang="vi">
+      <head>
+        <JsonLdScript data={websiteJsonLd} />
+      </head>
       <body
         className={`${beVietnamPro.variable} ${lora.variable} font-sans antialiased`}
       >
@@ -53,3 +56,4 @@ export default function RootLayout({
     </html>
   );
 }
+

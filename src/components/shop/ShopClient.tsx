@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Product, CategoryItem } from '@/lib/types';
 import ProductGrid from '@/components/shop/ProductGrid';
 

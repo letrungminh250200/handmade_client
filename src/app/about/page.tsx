@@ -39,7 +39,7 @@ const About: React.FC = () => {
                 Từ một tiệm nhỏ online chỉ với vài cuộn len trong phòng trọ sinh viên, Minh Thư Handmade đã lớn lên từng ngày nhờ sự yêu thương của những khách hàng trân trọng giá trị thủ công.
               </p>
               <p>
-                Chúng mình tin rằng, giữa thế giới hối hả và công nghiệp hóa, những sản phẩm làm bằng tay vẫn có chỗ đứng riêng. Nó không hoàn hảo 100% như máy móc, nhưng nó có "nhịp đập" và có "linh hồn".
+                Chúng mình tin rằng, giữa thế giới hối hả và công nghiệp hóa, những sản phẩm làm bằng tay vẫn có chỗ đứng riêng. Nó không hoàn hảo 100% như máy móc, nhưng nó có &quot;nhịp đập&quot; và có &quot;linh hồn&quot;.
               </p>
             </div>
             <div className="pt-4">
@@ -93,7 +93,7 @@ const About: React.FC = () => {
                <h3 className="text-2xl font-serif font-bold text-stone-800 mb-2">Trần Minh Thư</h3>
                <p className="text-terracotta font-medium mb-4">Founder & Lead Artisan</p>
                <p className="text-stone-600 italic leading-relaxed mb-6">
-                 "Mình luôn tâm niệm rằng, thời trang không chỉ là vẻ bề ngoài, mà là cách chúng ta đối xử với bản thân và môi trường. Mong rằng những món đồ nhỏ xinh từ tiệm sẽ mang lại cho bạn chút bình yên giữa cuộc sống bộn bề."
+                 &quot;Mình luôn tâm niệm rằng, thời trang không chỉ là vẻ bề ngoài, mà là cách chúng ta đối xử với bản thân và môi trường. Mong rằng những món đồ nhỏ xinh từ tiệm sẽ mang lại cho bạn chút bình yên giữa cuộc sống bộn bề.&quot;
                </p>
                <div className="flex gap-4">
                   <button className="p-2 text-stone-400 hover:text-stone-800 transition-colors"><Users className="w-5 h-5"/></button>

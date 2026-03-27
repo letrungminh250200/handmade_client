@@ -1,12 +1,14 @@
 "use client";
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowLeft, Heart, Minus, Plus, ShoppingBag, Truck, ShieldCheck, RefreshCw, Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Product } from '@/lib/types';
 import { useCart } from '@/context/CartContext';
 import SafeHTML from '@/components/ui/SafeHTML';
 import ProductCard from '@/components/ProductCard';
+
 
 /* ─────────────────── Image Gallery ─────────────────── */
 function ImageGallery({ images, name, discount }: { images: string[]; name: string; discount: number }) {
@@ -15,10 +17,13 @@ function ImageGallery({ images, name, discount }: { images: string[]; name: stri
   return (
     <div className="space-y-4">
       <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-stone-100 group">
-        <img
+        <Image
           src={images[activeIdx] || images[0]}
           alt={name}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          fill
+          sizes="(max-width: 1024px) 100vw, 50vw"
+          className="object-cover transition-transform duration-700 group-hover:scale-105"
+          priority
         />
         <button className="absolute top-4 right-4 p-3 bg-white/80 backdrop-blur-md rounded-full text-stone-400 hover:text-red-500 transition-colors shadow-sm">
           <Heart className="w-5 h-5" />
@@ -57,7 +62,9 @@ function ImageGallery({ images, name, discount }: { images: string[]; name: stri
                   : 'border-transparent opacity-60 hover:opacity-100'
               }`}
             >
-              <img src={img} alt={`${name} ${idx + 1}`} className="w-full h-full object-cover" />
+              <div className="relative w-full h-full">
+                <Image src={img} alt={`${name} ${idx + 1}`} fill sizes="64px" className="object-cover" />
+              </div>
             </button>
           ))}
         </div>
@@ -66,22 +73,65 @@ function ImageGallery({ images, name, discount }: { images: string[]; name: stri
   );
 }
 
+/* ─────────────────── Variant type from backend ─────────────────── */
+interface VariantData {
+  _id: string;
+  code: string;
+  code_format?: string;
+  attributes: Array<{ name: string; key: string; value: string; color?: string }>;
+  old_price: number;
+  new_price: number;
+  price: number;
+  images: Array<{ file_id: string; path: string }>;
+  is_main?: boolean;
+}
+
 /* ─────────────────── Product Info Panel ─────────────────── */
 function InfoPanel({
   product,
   variantGroups,
+  variants,
+  currentVariantId,
 }: {
   product: Product;
   variantGroups: { key: string; values: string[] }[];
+  variants: VariantData[];
+  currentVariantId?: string;
 }) {
   const [quantity, setQuantity] = useState(1);
-  const [selections, setSelections] = useState<Record<string, string>>({});
+  // Pre-select attributes from the current variant (from URL/slug)
+  const [selections, setSelections] = useState<Record<string, string>>(() => {
+    if (!currentVariantId || variants.length === 0) return {};
+    const current = variants.find(v => v._id === currentVariantId);
+    if (!current) return {};
+    const initial: Record<string, string> = {};
+    current.attributes.forEach(attr => {
+      if (attr.key && attr.name) initial[attr.key] = attr.name;
+    });
+    return initial;
+  });
   const [error, setError] = useState('');
   const { addToCart } = useCart();
 
+  // Find the variant that matches current selections
+  const activeVariant = useMemo(() => {
+    if (variants.length === 0 || Object.keys(selections).length === 0) return null;
+    return variants.find(v =>
+      v.attributes.every(attr => selections[attr.key] === attr.name)
+    ) || null;
+  }, [selections, variants]);
+
+  // Dynamic price/discount based on active variant
+  const currentPrice = activeVariant
+    ? (Number(activeVariant.new_price) || Number(activeVariant.price) || product.price)
+    : product.price;
+  const currentOriginalPrice = activeVariant
+    ? (Number(activeVariant.old_price) || Number(activeVariant.price) || undefined)
+    : product.originalPrice;
+
   const formatPrice = (n: number) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(n);
-  const discount = product.originalPrice
-    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+  const discount = currentOriginalPrice && currentOriginalPrice > currentPrice
+    ? Math.round(((currentOriginalPrice - currentPrice) / currentOriginalPrice) * 100)
     : 0;
 
   const handleAddToCart = () => {
@@ -91,12 +141,11 @@ function InfoPanel({
         return;
       }
     }
-    addToCart({
-      product,
-      quantity,
-      variant1: selections[variantGroups[0]?.key] || '',
-      variant2: selections[variantGroups[1]?.key] || '',
-    });
+    if (!activeVariant) {
+      setError('Không tìm thấy phiên bản sản phẩm này');
+      return;
+    }
+    addToCart(activeVariant._id, quantity);
     setError('');
   };
 
@@ -113,10 +162,10 @@ function InfoPanel({
       </h1>
 
       <div className="flex items-end gap-3 mb-5">
-        <span className="text-3xl font-bold text-stone-900">{formatPrice(product.price)}</span>
-        {product.originalPrice && (
+        <span className="text-3xl font-bold text-stone-900">{formatPrice(currentPrice)}</span>
+        {currentOriginalPrice && currentOriginalPrice > currentPrice && (
           <>
-            <span className="text-lg text-stone-400 line-through">{formatPrice(product.originalPrice)}</span>
+            <span className="text-lg text-stone-400 line-through">{formatPrice(currentOriginalPrice)}</span>
             <span className="text-sm font-bold text-red-500 bg-red-50 px-2 py-0.5 rounded-full">
               -{discount}%
             </span>
@@ -201,9 +250,11 @@ interface ProductDetailClientProps {
   product: Product;
   variantGroups: { key: string; values: string[] }[];
   relatedProducts: Product[];
+  variants: VariantData[];
+  currentVariantId?: string;
 }
 
-export default function ProductDetailClient({ product, variantGroups, relatedProducts }: ProductDetailClientProps) {
+export default function ProductDetailClient({ product, variantGroups, relatedProducts, variants, currentVariantId }: ProductDetailClientProps) {
   const [activeTab, setActiveTab] = useState<'description' | 'reviews'>('description');
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -238,7 +289,7 @@ export default function ProductDetailClient({ product, variantGroups, relatedPro
               />
             </div>
             <div className="p-6 lg:p-10">
-              <InfoPanel product={product} variantGroups={variantGroups} />
+              <InfoPanel product={product} variantGroups={variantGroups} variants={variants} currentVariantId={currentVariantId} />
             </div>
           </div>
         </div>

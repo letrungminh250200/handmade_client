@@ -31,15 +31,16 @@ const Navbar: React.FC = () => {
           <div className="hidden md:flex items-center space-x-8">
             <Link href="/" className={isActive('/')}>Trang Chủ</Link>
             <Link href="/shop" className={isActive('/shop')}>Cửa Hàng</Link>
+            <Link href="/order-tracking" className={isActive('/order-tracking')}>Đơn Hàng</Link>
             <Link href="/news" className={isActive('/news')}>Tin Tức</Link>
             <Link href="/about" className={isActive('/about')}>Về Tiệm</Link>
             <Link href="/contact" className={isActive('/contact')}>Liên Hệ</Link>
           </div>
 
           <div className="flex items-center gap-4">
-            <button className="p-2 text-stone-400 cursor-not-allowed" title="Tính năng đang phát triển">
+            <Link href="/search" className="p-2 text-stone-600 hover:text-stone-900 transition-colors" title="Tìm kiếm sản phẩm">
               <Search className="h-5 w-5" />
-            </button>
+            </Link>
             <button 
               className="p-2 text-stone-600 hover:text-stone-900 transition-colors relative"
               onClick={() => setIsCartOpen(true)}
@@ -66,6 +67,7 @@ const Navbar: React.FC = () => {
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-stone-700">Trang Chủ</Link>
             <Link href="/shop" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-stone-700">Cửa Hàng</Link>
+            <Link href="/order-tracking" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-stone-700">Đơn Hàng</Link>
             <Link href="/news" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-stone-700">Tin Tức</Link>
             <Link href="/about" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-stone-700">Về Tiệm</Link>
             <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-stone-700">Liên Hệ</Link>

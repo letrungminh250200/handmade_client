@@ -1,29 +1,45 @@
 "use client";
 import React, { useState } from 'react';
-import { MapPin, Phone, Mail, Clock, Send, Facebook, Instagram, Twitter } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Send, Facebook, Instagram, Twitter, CheckCircle, AlertCircle } from 'lucide-react';
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    phone: '',
     subject: '',
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Simulate send
-    setTimeout(() => {
+    setSubmitStatus('idle');
+
+    try {
+      const res = await fetch('/api/contacts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (res.ok) {
+        setSubmitStatus('success');
+        setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+      } else {
+        setSubmitStatus('error');
+      }
+    } catch {
+      setSubmitStatus('error');
+    } finally {
       setIsSubmitting(false);
-      alert("Cảm ơn bạn đã liên hệ! Minh Thư sẽ phản hồi sớm nhất có thể.");
-      setFormData({ name: '', email: '', subject: '', message: '' });
-    }, 1500);
+    }
   };
 
   return (
@@ -104,6 +120,20 @@ const Contact: React.FC = () => {
           <div className="bg-white p-8 md:p-10 rounded-3xl shadow-xl border border-stone-100">
              <h2 className="text-2xl font-serif font-bold text-stone-800 mb-2">Gửi Tin Nhắn</h2>
              <p className="text-stone-500 text-sm mb-8">Chúng mình sẽ trả lời qua email trong vòng 24h.</p>
+
+             {/* Success / Error Messages */}
+             {submitStatus === 'success' && (
+               <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-3 text-green-800">
+                 <CheckCircle className="w-5 h-5 shrink-0" />
+                 <span className="text-sm font-medium">Cảm ơn bạn đã liên hệ! Minh Thư sẽ phản hồi sớm nhất có thể.</span>
+               </div>
+             )}
+             {submitStatus === 'error' && (
+               <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-800">
+                 <AlertCircle className="w-5 h-5 shrink-0" />
+                 <span className="text-sm font-medium">Có lỗi xảy ra, vui lòng thử lại sau.</span>
+               </div>
+             )}
              
              <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
@@ -119,17 +149,30 @@ const Contact: React.FC = () => {
                    />
                 </div>
 
-                <div>
-                   <label className="block text-sm font-medium text-stone-700 mb-2">Email liên hệ</label>
-                   <input 
-                     type="email" 
-                     name="email"
-                     required
-                     value={formData.email}
-                     onChange={handleChange}
-                     className="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-terracotta focus:border-terracotta outline-none transition-all"
-                     placeholder="name@example.com"
-                   />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                     <label className="block text-sm font-medium text-stone-700 mb-2">Email liên hệ</label>
+                     <input 
+                       type="email" 
+                       name="email"
+                       required
+                       value={formData.email}
+                       onChange={handleChange}
+                       className="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-terracotta focus:border-terracotta outline-none transition-all"
+                       placeholder="name@example.com"
+                     />
+                  </div>
+                  <div>
+                     <label className="block text-sm font-medium text-stone-700 mb-2">Số điện thoại</label>
+                     <input 
+                       type="tel" 
+                       name="phone"
+                       value={formData.phone}
+                       onChange={handleChange}
+                       className="w-full px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl focus:ring-2 focus:ring-terracotta focus:border-terracotta outline-none transition-all"
+                       placeholder="090 xxx xxxx"
+                     />
+                  </div>
                 </div>
 
                 <div>
@@ -171,7 +214,7 @@ const Contact: React.FC = () => {
 
       </div>
 
-      {/* Map Placeholder (Simulated) */}
+      {/* Map Placeholder */}
       <div className="max-w-7xl mx-auto mt-20 rounded-3xl overflow-hidden h-80 shadow-md grayscale hover:grayscale-0 transition-all duration-700 relative group animate-fade-in-up delay-300">
          <img src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=2000&auto=format&fit=crop" className="w-full h-full object-cover" alt="Map Location" />
          <div className="absolute inset-0 bg-stone-900/20 flex items-center justify-center">

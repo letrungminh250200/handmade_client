@@ -107,7 +107,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             <button
               onClick={(e) => {
                 e.preventDefault();
-                addToCart({ product, variant1: product.variant1?.[0], variant2: product.variant2?.[0] });
+                addToCart(product.id, 1);
               }}
               className="p-2 rounded-full bg-stone-100 text-stone-600 hover:bg-terracotta hover:text-white transition-all duration-300 transform active:scale-95 hover:shadow-md"
               aria-label="Thêm vào giỏ hàng"
