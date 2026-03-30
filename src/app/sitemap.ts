@@ -14,7 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
     },
     {
-      url: `${SITE_URL}/shop`,
+      url: `${SITE_URL}/danh-muc`,
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 0.9,

@@ -71,7 +71,7 @@ const HomeClient: React.FC<HomeClientProps> = ({ featuredProducts, latestNews })
               Chào mừng bạn đến với Minh Thư Handmade.
             </p>
             <div className="pt-10 animate-fade-in-up" style={{ animationDelay: '1200ms' }}>
-              <Link href="/shop" className="group relative inline-flex items-center gap-3 px-10 py-4 bg-white/10 backdrop-blur-md border border-white/30 rounded-full text-white overflow-hidden transition-all duration-300 hover:bg-white hover:text-stone-900">
+              <Link href="/danh-muc" className="group relative inline-flex items-center gap-3 px-10 py-4 bg-white/10 backdrop-blur-md border border-white/30 rounded-full text-white overflow-hidden transition-all duration-300 hover:bg-white hover:text-stone-900">
                 <span className="relative z-10 font-medium tracking-widest uppercase text-sm">Khám phá ngay</span>
                 <ArrowRight className="w-4 h-4 relative z-10 group-hover:translate-x-1 transition-transform" />
                 <div className="absolute inset-0 bg-white transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500 ease-out" />
@@ -122,7 +122,7 @@ const HomeClient: React.FC<HomeClientProps> = ({ featuredProducts, latestNews })
             <span className="text-terracotta text-sm font-bold tracking-wider uppercase mb-3 block">Bộ Sưu Tập Mới</span>
             <h2 className="text-4xl md:text-5xl font-serif font-bold text-stone-800">Góc Nhỏ Của Minh Thư</h2>
           </div>
-          <Link href="/shop" className="hidden md:flex group items-center gap-2 text-stone-500 hover:text-stone-900 transition-colors">
+          <Link href="/danh-muc" className="hidden md:flex group items-center gap-2 text-stone-500 hover:text-stone-900 transition-colors">
             <span className="border-b border-stone-300 group-hover:border-stone-900 pb-1">Xem tất cả sản phẩm</span>
             <ArrowRight className="h-4 w-4 transform group-hover:translate-x-2 transition-transform" />
           </Link>

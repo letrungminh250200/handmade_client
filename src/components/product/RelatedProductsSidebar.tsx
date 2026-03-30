@@ -49,7 +49,7 @@ const RelatedProductsSidebar: React.FC<RelatedProductsSidebarProps> = ({ product
           ))
         )}
       </div>
-      <Link href="/shop" className="block w-full text-center py-3 bg-stone-50 rounded-xl text-stone-600 font-bold text-xs mt-8 hover:bg-stone-100 transition-colors">
+      <Link href="/danh-muc" className="block w-full text-center py-3 bg-stone-50 rounded-xl text-stone-600 font-bold text-xs mt-8 hover:bg-stone-100 transition-colors">
         Xem tất cả cửa hàng
       </Link>
     </div>

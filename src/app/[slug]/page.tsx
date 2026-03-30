@@ -4,6 +4,7 @@ import { Product, BackendProductDetail } from '@/lib/types';
 import ProductDetailClient from '@/components/product/ProductDetailClient';
 import type { Metadata } from 'next';
 import { SITE_URL, createProductJsonLd, createBreadcrumbJsonLd, createProductMetadata, JsonLdScript } from '@/lib/seo';
+import { isProductSlug } from '@/lib/routes';
 
 function stripHtmlTags(html: string): string {
   return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim();
@@ -62,6 +63,7 @@ function mapDetailToProduct(detail: BackendProductDetail): Product {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
+  if (!isProductSlug(slug)) return { title: 'Sản Phẩm' };
   try {
     const detail = await serverProductApi.getBySlug(slug);
     const product = mapDetailToProduct(detail);
@@ -79,6 +81,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  if (!isProductSlug(slug)) notFound();
 
   let detail: BackendProductDetail;
   try {
@@ -115,7 +118,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   });
   const breadcrumbJsonLd = createBreadcrumbJsonLd([
     { name: 'Trang chủ', url: SITE_URL },
-    { name: 'Sản Phẩm', url: `${SITE_URL}/shop` },
+    { name: 'Sản Phẩm', url: `${SITE_URL}/danh-muc` },
     { name: product.name, url: `${SITE_URL}/${productSlug}` },
   ]);
 

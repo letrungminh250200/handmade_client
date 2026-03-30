@@ -194,7 +194,7 @@ export default function SearchPage() {
               Thử tìm với từ khoá khác hoặc duyệt cửa hàng để khám phá thêm sản phẩm
             </p>
             <Link
-              href="/shop"
+              href="/danh-muc"
               className="inline-flex items-center gap-2 px-6 py-3 bg-stone-900 text-white rounded-full
                 font-bold hover:bg-stone-800 transition-all text-sm"
             >

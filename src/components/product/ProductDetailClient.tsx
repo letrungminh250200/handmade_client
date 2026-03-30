@@ -152,7 +152,7 @@ function InfoPanel({
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center gap-2 text-sm text-stone-400 mb-3">
-        <Link href="/shop" className="hover:text-terracotta transition-colors">Cửa hàng</Link>
+        <Link href="/danh-muc" className="hover:text-terracotta transition-colors">Cửa hàng</Link>
         <span>/</span>
         <span className="text-stone-600">{product.name}</span>
       </div>
@@ -273,7 +273,7 @@ export default function ProductDetailClient({ product, variantGroups, relatedPro
     <div className="min-h-screen bg-stone-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        <Link href="/shop" className="inline-flex items-center gap-2 text-sm text-stone-400 hover:text-stone-700 mb-8 transition-colors group">
+        <Link href="/danh-muc" className="inline-flex items-center gap-2 text-sm text-stone-400 hover:text-stone-700 mb-8 transition-colors group">
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
           <span>Quay lại cửa hàng</span>
         </Link>

@@ -12,7 +12,10 @@ const Navbar: React.FC = () => {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
-  const isActive = (path: string) => pathname === path ? 'text-terracotta font-medium underline underline-offset-8' : 'text-stone-600 hover:text-stone-900';
+  const isActive = (path: string) => {
+    const match = path === '/' ? pathname === '/' : pathname.startsWith(path);
+    return match ? 'text-terracotta font-medium underline underline-offset-8' : 'text-stone-600 hover:text-stone-900';
+  };
 
   return (
     <nav className="sticky top-0 z-40 w-full bg-stone-50/95 backdrop-blur-md border-b border-stone-200 shadow-sm">
@@ -30,7 +33,7 @@ const Navbar: React.FC = () => {
 
           <div className="hidden md:flex items-center space-x-8">
             <Link href="/" className={isActive('/')}>Trang Chủ</Link>
-            <Link href="/shop" className={isActive('/shop')}>Cửa Hàng</Link>
+            <Link href="/danh-muc" className={isActive('/danh-muc')}>Cửa Hàng</Link>
             <Link href="/order-tracking" className={isActive('/order-tracking')}>Đơn Hàng</Link>
             <Link href="/news" className={isActive('/news')}>Tin Tức</Link>
             <Link href="/about" className={isActive('/about')}>Về Tiệm</Link>
@@ -66,7 +69,7 @@ const Navbar: React.FC = () => {
         <div className="md:hidden bg-white border-t border-stone-100">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <Link href="/" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-stone-700">Trang Chủ</Link>
-            <Link href="/shop" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-stone-700">Cửa Hàng</Link>
+            <Link href="/danh-muc" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-stone-700">Cửa Hàng</Link>
             <Link href="/order-tracking" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-stone-700">Đơn Hàng</Link>
             <Link href="/news" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-stone-700">Tin Tức</Link>
             <Link href="/about" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-stone-700">Về Tiệm</Link>

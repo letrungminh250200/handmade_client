@@ -84,6 +84,7 @@ export const serverProductApi = {
       `/client/products${qs ? `?${qs}` : ''}`,
       { next: { revalidate: 60 } }
     );
+    console.log(`/client/products${qs ? `?${qs}` : ''}`);
 
     return {
       total: data.total || 0,

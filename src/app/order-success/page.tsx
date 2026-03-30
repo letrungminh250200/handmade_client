@@ -54,7 +54,7 @@ const OrderSuccess: React.FC = () => {
             Theo dõi đơn hàng
           </Link>
           <Link
-            href="/shop"
+            href="/danh-muc"
             className="inline-flex items-center justify-center gap-2 px-8 py-3 border border-stone-300 text-stone-700 rounded-full font-medium hover:bg-stone-100 transition-all"
           >
             Tiếp tục mua sắm

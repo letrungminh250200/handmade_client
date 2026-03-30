@@ -106,7 +106,7 @@ const About: React.FC = () => {
       {/* CTA */}
       <section className="py-20 bg-stone-800 text-stone-200 text-center">
          <h2 className="text-3xl font-serif font-bold text-white mb-6">Bạn đã sẵn sàng chọn món đồ thủ công cho riêng mình?</h2>
-         <Link href="/shop" className="inline-block px-10 py-4 bg-white text-stone-900 rounded-full font-bold hover:bg-terracotta hover:text-white transition-all duration-300 shadow-lg">
+         <Link href="/danh-muc" className="inline-block px-10 py-4 bg-white text-stone-900 rounded-full font-bold hover:bg-terracotta hover:text-white transition-all duration-300 shadow-lg">
             Ghé Cửa Hàng Ngay
          </Link>
       </section>
