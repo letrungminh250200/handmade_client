@@ -120,7 +120,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
               {/* Body Content (HTML from CMS) */}
               {post.content && (
                 <div
-                  className="prose prose-stone prose-lg max-w-none text-stone-700 leading-9"
+                  className="prose prose-stone prose-lg max-w-none text-stone-700 leading-9 box-description"
                   dangerouslySetInnerHTML={{ __html: post.content }}
                 />
               )}

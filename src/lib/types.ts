@@ -214,6 +214,7 @@ export interface NewsItem {
   hot: boolean;
   views: number;
   created_at: string;
+  updated_at?: string;
 }
 
 // Enriched cart item from POST /client/orders/cart API
