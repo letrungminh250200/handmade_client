@@ -35,4 +35,4 @@ export const LOGO_SRC = '/logo.png';
  * Logo SVG file path variant không có nền trắng - cho Footer
  * File: public/logo-no-bg.svg
  */
-export const LOGO_SRC_NO_BG = '/logo-no-bg.png';
+export const LOGO_SRC_NO_BG = '/logo.png';

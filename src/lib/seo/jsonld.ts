@@ -77,6 +77,58 @@ export function createArticleJsonLd(article: ArticleJsonLdParams) {
   };
 }
 
+interface OrganizationJsonLdParams {
+  description?: string;
+  logo?: string;
+  foundingDate?: string;
+  founderName?: string;
+  sameAs?: string[];
+  contactPoint?: {
+    telephone?: string;
+    email?: string;
+    contactType?: string;
+  };
+  address?: {
+    streetAddress?: string;
+    addressLocality?: string;
+    addressCountry?: string;
+  };
+}
+
+/** JSON-LD Schema Organization (dùng cho trang About / homepage) */
+export function createOrganizationJsonLd(params: OrganizationJsonLdParams = {}) {
+  const json: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: SITE_NAME,
+    url: SITE_URL,
+  };
+  if (params.logo) json.logo = params.logo;
+  if (params.description) json.description = params.description;
+  if (params.foundingDate) json.foundingDate = params.foundingDate;
+  if (params.founderName) {
+    json.founder = { '@type': 'Person', name: params.founderName };
+  }
+  if (params.sameAs && params.sameAs.length) json.sameAs = params.sameAs;
+  if (params.contactPoint) {
+    json.contactPoint = {
+      '@type': 'ContactPoint',
+      contactType: params.contactPoint.contactType || 'customer service',
+      ...(params.contactPoint.telephone && { telephone: params.contactPoint.telephone }),
+      ...(params.contactPoint.email && { email: params.contactPoint.email }),
+    };
+  }
+  if (params.address) {
+    json.address = {
+      '@type': 'PostalAddress',
+      ...(params.address.streetAddress && { streetAddress: params.address.streetAddress }),
+      ...(params.address.addressLocality && { addressLocality: params.address.addressLocality }),
+      ...(params.address.addressCountry && { addressCountry: params.address.addressCountry }),
+    };
+  }
+  return json;
+}
+
 /** JSON-LD Schema BreadcrumbList (dùng chung cho mọi trang) */
 export function createBreadcrumbJsonLd(items: BreadcrumbItem[]) {
   return {

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import { MapPin, Phone, Mail, Clock, Send, Facebook, Instagram, Twitter, CheckCircle, AlertCircle } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Send, Facebook, Instagram, CheckCircle, AlertCircle } from 'lucide-react';
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -67,7 +67,7 @@ const Contact: React.FC = () => {
                    </div>
                    <div>
                      <h3 className="font-bold text-stone-900">Địa chỉ Tiệm</h3>
-                     <p className="text-stone-600 text-sm mt-1">123 Phố Cổ, Quận Hoàn Kiếm, Hà Nội</p>
+                     <p className="text-stone-600 text-sm mt-1">100 Đ. Võ Chí Công, Cát Lái, Hồ Chí Minh, Việt Nam</p>
                      <p className="text-stone-500 text-xs mt-1 italic">(Vui lòng đặt lịch trước khi ghé thăm)</p>
                    </div>
                 </div>
@@ -78,7 +78,7 @@ const Contact: React.FC = () => {
                    </div>
                    <div>
                      <h3 className="font-bold text-stone-900">Điện thoại / Zalo</h3>
-                     <p className="text-stone-600 text-sm mt-1">090 123 4567</p>
+                     <p className="text-stone-600 text-sm mt-1">0919 278 946</p>
                    </div>
                 </div>
 
@@ -88,7 +88,7 @@ const Contact: React.FC = () => {
                    </div>
                    <div>
                      <h3 className="font-bold text-stone-900">Email</h3>
-                     <p className="text-stone-600 text-sm mt-1">hi@minhthuhandmade.vn</p>
+                     <p className="text-stone-600 text-sm mt-1">minhthuhandmades@gmail.com</p>
                    </div>
                 </div>
 
@@ -107,9 +107,24 @@ const Contact: React.FC = () => {
               <div className="mt-10 pt-8 border-t border-stone-100">
                  <h3 className="font-bold text-stone-900 mb-4">Theo dõi chúng mình</h3>
                  <div className="flex gap-4">
-                    <a href="#" className="w-10 h-10 rounded-full bg-stone-800 text-white flex items-center justify-center hover:bg-terracotta transition-colors"><Facebook className="w-5 h-5" /></a>
-                    <a href="#" className="w-10 h-10 rounded-full bg-stone-800 text-white flex items-center justify-center hover:bg-terracotta transition-colors"><Instagram className="w-5 h-5" /></a>
-                    <a href="#" className="w-10 h-10 rounded-full bg-stone-800 text-white flex items-center justify-center hover:bg-terracotta transition-colors"><Twitter className="w-5 h-5" /></a>
+                    <a
+                      href="https://www.facebook.com/handmadeMinhThu"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Facebook Minh Thư Handmade"
+                      className="w-10 h-10 rounded-full bg-stone-800 text-white flex items-center justify-center hover:bg-terracotta transition-colors"
+                    >
+                      <Facebook className="w-5 h-5" />
+                    </a>
+                    <a
+                      href="https://www.instagram.com/minhthuhandmade.98/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Instagram Minh Thư Handmade"
+                      className="w-10 h-10 rounded-full bg-stone-800 text-white flex items-center justify-center hover:bg-terracotta transition-colors"
+                    >
+                      <Instagram className="w-5 h-5" />
+                    </a>
                  </div>
               </div>
            </div>

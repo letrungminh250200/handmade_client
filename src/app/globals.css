@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: var(--font-dm-sans), system-ui, sans-serif;
+  --font-serif: var(--font-cormorant), Georgia, serif;
+}
+
 :root {
   --stone-50: #fafaf9;
   --stone-100: #f5f5f4;
@@ -13,17 +18,76 @@
 }
 
 body {
-  font-family: 'Be Vietnam Pro', system-ui, sans-serif;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
   background-color: var(--stone-50);
   color: var(--stone-700);
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Lora', serif;
+  font-family: var(--font-cormorant), Georgia, serif;
 }
 .box-description img{
   display: inline !important;
 }
+
+/* Typography for CMS-rendered article content */
+.box-description h1 {
+  font-size: 2.25rem;
+  line-height: 1.2;
+  font-weight: 700;
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
+  color: var(--stone-800);
+}
+.box-description h2 {
+  font-size: 1.875rem;
+  line-height: 1.25;
+  font-weight: 700;
+  margin-top: 2.25rem;
+  margin-bottom: 1rem;
+  color: var(--stone-800);
+}
+.box-description h3 {
+  font-size: 1.5rem;
+  line-height: 1.3;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 0.875rem;
+  color: var(--stone-800);
+}
+.box-description h4 {
+  font-size: 1.25rem;
+  line-height: 1.35;
+  font-weight: 600;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+  color: var(--stone-800);
+}
+.box-description p {
+  margin-bottom: 1.25rem;
+  line-height: 1.85;
+}
+.box-description ul,
+.box-description ol {
+  margin: 1.25rem 0 1.25rem 1.5rem;
+  line-height: 1.85;
+}
+.box-description ul { list-style: disc; }
+.box-description ol { list-style: decimal; }
+.box-description li { margin-bottom: 0.5rem; }
+.box-description blockquote {
+  border-left: 4px solid var(--terracotta);
+  padding-left: 1.25rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: var(--stone-700);
+}
+.box-description a {
+  color: var(--terracotta);
+  text-decoration: underline;
+}
+.box-description strong { font-weight: 700; }
+.box-description em { font-style: italic; }
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;

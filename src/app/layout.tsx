@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Be_Vietnam_Pro, Lora } from "next/font/google";
+import { DM_Sans, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import Navbar from "@/components/layout/Navbar";
@@ -8,17 +8,17 @@ import CartSidebar from "@/components/layout/CartSidebar";
 import AIStylist from "@/components/layout/AIStylist";
 import { globalMetadata, createWebsiteJsonLd, JsonLdScript } from "@/lib/seo";
 
-const beVietnamPro = Be_Vietnam_Pro({
-  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+const dmSans = DM_Sans({
+  weight: ['400', '500', '600', '700'],
   subsets: ["latin", "vietnamese"],
-  variable: "--font-be-vietnam-pro",
+  variable: "--font-dm-sans",
   display: 'swap',
 });
 
-const lora = Lora({
+const cormorant = Cormorant_Garamond({
   weight: ['400', '500', '600', '700'],
   subsets: ["latin", "vietnamese"],
-  variable: "--font-lora",
+  variable: "--font-cormorant",
   style: ['normal', 'italic'],
   display: 'swap',
 });
@@ -38,7 +38,7 @@ export default function RootLayout({
         <JsonLdScript data={websiteJsonLd} />
       </head>
       <body
-        className={`${beVietnamPro.variable} ${lora.variable} font-sans antialiased`}
+        className={`${dmSans.variable} ${cormorant.variable} font-sans antialiased`}
       >
         <CartProvider>
           <div className="noise-overlay" />

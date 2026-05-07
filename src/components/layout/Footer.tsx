@@ -1,5 +1,5 @@
 import React from 'react';
-import { Facebook, Instagram, Twitter } from 'lucide-react';
+import { Facebook, Instagram } from 'lucide-react';
 import Image from 'next/image';
 import { LOGO_SRC_NO_BG } from '@/lib/utils';
 
@@ -22,17 +22,32 @@ const Footer: React.FC = () => {
           <div>
             <h3 className="text-lg font-serif font-semibold text-stone-800 mb-4">Liên Hệ</h3>
             <ul className="space-y-2 text-stone-600 text-sm">
-              <li>Địa chỉ: 123 Phố Cổ, Hà Nội</li>
-              <li>Điện thoại: 090 123 4567</li>
-              <li>Email: hi@minhthuhandmade.vn</li>
+              <li>Địa chỉ: 100 Đ. Võ Chí Công, Cát Lái, Hồ Chí Minh, Việt Nam</li>
+              <li>Điện thoại: 0919 278 946</li>
+              <li>Email: minhthuhandmades@gmail.com</li>
             </ul>
           </div>
           <div>
             <h3 className="text-lg font-serif font-semibold text-stone-800 mb-4">Theo Dõi</h3>
             <div className="flex space-x-4">
-              <a href="#" className="text-stone-500 hover:text-terracotta transition-colors"><Facebook className="h-5 w-5" /></a>
-              <a href="#" className="text-stone-500 hover:text-terracotta transition-colors"><Instagram className="h-5 w-5" /></a>
-              <a href="#" className="text-stone-500 hover:text-terracotta transition-colors"><Twitter className="h-5 w-5" /></a>
+              <a
+                href="https://www.facebook.com/handmadeMinhThu"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook Minh Thư Handmade"
+                className="text-stone-500 hover:text-terracotta transition-colors"
+              >
+                <Facebook className="h-5 w-5" />
+              </a>
+              <a
+                href="https://www.instagram.com/minhthuhandmade.98/"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram Minh Thư Handmade"
+                className="text-stone-500 hover:text-terracotta transition-colors"
+              >
+                <Instagram className="h-5 w-5" />
+              </a>
             </div>
           </div>
         </div>
