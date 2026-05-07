@@ -307,7 +307,7 @@ const About = () => {
             <article className="bg-white p-8 md:p-14 rounded-3xl shadow-lg border border-stone-100 flex flex-col md:flex-row items-center gap-12">
               <div className="w-48 h-48 md:w-64 md:h-64 rounded-full overflow-hidden shrink-0 border-4 border-stone-50 shadow-md">
                 <img
-                  src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=500&auto=format&fit=crop"
+                  src="https://api.minhthuhandmade.com/files/69be6b55c056dce3fe970942/05/2026/1778182788438-764448980.webp"
                   alt={`${FOUNDER_NAME} — Người sáng lập Minh Thư Handmade`}
                   className="w-full h-full object-cover"
                 />
