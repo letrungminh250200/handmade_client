@@ -67,7 +67,7 @@ const HomeClient: React.FC<HomeClientProps> = ({ featuredProducts, latestNews })
               <span className="italic font-light text-5xl md:text-7xl block mt-2 animate-fade-in-up" style={{ animationDelay: '800ms' }}>một nhịp</span>
             </h1>
             <p className="text-lg md:text-xl text-stone-100 max-w-xl mx-auto font-light leading-relaxed tracking-wide animate-fade-in-up" style={{ animationDelay: '1000ms' }}>
-              Để cảm nhận hơi thở của tự nhiên trên từng nếp vải. <br/>
+              Để cảm nhận hơi thở của tự nhiên trên từng sợi len. <br/>
               Chào mừng bạn đến với Minh Thư Handmade.
             </p>
             <div className="pt-10 animate-fade-in-up" style={{ animationDelay: '1200ms' }}>
