@@ -87,8 +87,8 @@ const AboutClient = () => {
       >
         <div className="absolute inset-0 opacity-0-start delay-100">
           <Image
-            src="https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?q=80&w=2000&auto=format&fit=crop"
-            alt="Xưởng thủ công Minh Thư Handmade — không gian đan móc len"
+            src="/images/about-hero.png"
+            alt="Xưởng thủ công Minh Thư Handmade — không gian đan móc len với sản phẩm túi xách và áo len"
             fill
             priority
             className="object-cover"
@@ -152,8 +152,8 @@ const AboutClient = () => {
           <div className="relative opacity-0-start delay-400">
             <div className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl rotate-3 hover:rotate-0 transition-all duration-700">
               <Image
-                src="https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?q=80&w=1000&auto=format&fit=crop"
-                alt="Đôi bàn tay đang đan len thủ công — biểu tượng của thương hiệu Minh Thư Handmade"
+                src="/images/about-origin.png"
+                alt="Đôi bàn tay đang móc len tạo túi xách thủ công — Minh Thư Handmade"
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
                 className="object-cover hover:scale-105 transition-transform duration-700"
