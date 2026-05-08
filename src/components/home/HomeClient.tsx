@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { ArrowRight, PenTool, BookOpen } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Product } from '@/lib/types';
+import { Product, CategoryItem } from '@/lib/types';
 import type { HomeNewsItem } from '@/app/page';
 import ProductCard from '@/components/ProductCard';
 import { LOGO_SRC } from '@/lib/utils';
@@ -22,9 +22,11 @@ const SplitText = ({ text, className }: { text: string, className?: string }) =>
 interface HomeClientProps {
   featuredProducts: Product[];
   latestNews: HomeNewsItem[];
+  newProducts: Product[];
+  categories: CategoryItem[];
 }
 
-const HomeClient: React.FC<HomeClientProps> = ({ featuredProducts, latestNews }) => {
+const HomeClient: React.FC<HomeClientProps> = ({ featuredProducts, latestNews, newProducts, categories }) => {
   const [offsetY, setOffsetY] = useState(0);
 
   useEffect(() => {
@@ -116,7 +118,28 @@ const HomeClient: React.FC<HomeClientProps> = ({ featuredProducts, latestNews })
         </div>
       </section>
 
-      <section className="py-32 px-4 sm:px-6 lg:px-8 max-w-full mx-auto bg-white">
+      {/* Danh mục nổi bật */}
+      {categories && categories.length > 0 && (
+        <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-stone-200">
+          <div className="text-center mb-16 opacity-0-start">
+            <h2 className="text-4xl md:text-5xl font-serif font-bold text-stone-800">Danh Mục Nổi Bật</h2>
+            <p className="mt-4 text-stone-600 text-lg font-light">Lựa chọn phong cách của riêng bạn.</p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {categories.slice(0, 4).map((cat, idx) => (
+              <Link key={cat.id || cat.slug || idx} href={`/danh-muc/${cat.slug}`} className={`group block relative overflow-hidden rounded-2xl aspect-[4/5] opacity-0-start delay-${idx * 100}`}>
+                <Image src={cat.image || '/product-banner.webp'} alt={cat.name} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
+                <div className="absolute inset-0 bg-stone-900/40 group-hover:bg-stone-900/20 transition-colors duration-500" />
+                <div className="absolute inset-0 flex items-center justify-center p-4 text-center">
+                  <h3 className="text-white text-2xl md:text-3xl font-serif font-bold tracking-wider drop-shadow-lg">{cat.name}</h3>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section className="py-32 px-4 sm:px-6 lg:px-8 max-w-full mx-auto bg-white border-t border-stone-200">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-end mb-20 opacity-0-start">
           <div>
             <span className="text-terracotta text-sm font-bold tracking-wider uppercase mb-3 block">Bộ Sưu Tập Mới</span>
@@ -141,6 +164,30 @@ const HomeClient: React.FC<HomeClientProps> = ({ featuredProducts, latestNews })
           )}
         </div>
       </section>
+
+      {/* Hàng mới về */}
+      {newProducts && newProducts.length > 0 && (
+        <section className="py-32 px-4 sm:px-6 lg:px-8 max-w-full mx-auto bg-stone-50 border-t border-stone-200">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-end mb-20 opacity-0-start">
+            <div>
+              <span className="text-terracotta text-sm font-bold tracking-wider uppercase mb-3 block">Mới Nhất</span>
+              <h2 className="text-4xl md:text-5xl font-serif font-bold text-stone-800">Hàng Mới Về</h2>
+            </div>
+            <Link href="/danh-muc" className="hidden md:flex group items-center gap-2 text-stone-500 hover:text-stone-900 transition-colors">
+              <span className="border-b border-stone-300 group-hover:border-stone-900 pb-1">Xem tất cả</span>
+              <ArrowRight className="h-4 w-4 transform group-hover:translate-x-2 transition-transform" />
+            </Link>
+          </div>
+          <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-16">
+            {newProducts.map((product, idx) => (
+              <div key={product.id} className={`opacity-0-start delay-${(idx % 4) * 100}`}>
+                <ProductCard product={product} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
 
        <section className="py-32 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-stone-200">
         <div className="text-center mb-16 opacity-0-start">

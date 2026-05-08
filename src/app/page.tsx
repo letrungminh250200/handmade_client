@@ -1,5 +1,5 @@
-import { serverProductApi, serverNewsApi, resolveImageUrl } from '@/services/server-api';
-import { Product, NewsItem } from '@/lib/types';
+import { serverProductApi, serverNewsApi, serverCategoryApi, resolveImageUrl } from '@/services/server-api';
+import { Product, NewsItem, CategoryItem } from '@/lib/types';
 import HomeClient from '@/components/home/HomeClient';
 
 export interface HomeNewsItem {
@@ -34,11 +34,30 @@ function mapNewsForHome(news: NewsItem): HomeNewsItem {
 export default async function HomePage() {
   let featuredProducts: Product[] = [];
   let latestNews: HomeNewsItem[] = [];
+  let newProducts: Product[] = [];
+  let categories: CategoryItem[] = [];
 
   try {
     featuredProducts = await serverProductApi.getHotDeals(8);
   } catch (err) {
     console.error('Failed to load hot deals:', err);
+  }
+
+  try {
+    const newProdData = await serverProductApi.getAll({ limit: 8, sort: 'newest' });
+    newProducts = newProdData.items || [];
+  } catch (err) {
+    console.error('Failed to load new products:', err);
+  }
+
+  try {
+    const rawCategories = await serverCategoryApi.getAll();
+    categories = (rawCategories || []).map(cat => ({
+      ...cat,
+      image: cat.image ? resolveImageUrl(cat.image) : resolveImageUrl(undefined)
+    }));
+  } catch (err) {
+    console.error('Failed to load categories:', err);
   }
 
   try {
@@ -48,5 +67,12 @@ export default async function HomePage() {
     console.error('Failed to load news:', err);
   }
 
-  return <HomeClient featuredProducts={featuredProducts} latestNews={latestNews} />;
+  return (
+    <HomeClient 
+      featuredProducts={featuredProducts} 
+      newProducts={newProducts}
+      categories={categories}
+      latestNews={latestNews} 
+    />
+  );
 }
