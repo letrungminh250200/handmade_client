@@ -120,12 +120,12 @@ const MissionClient = () => {
             Chúng mình không đơn thuần đan len. Chúng mình đan kết những mảnh đời,
             gửi gắm hơi ấm và lan tỏa niềm tin rằng cái đẹp có thể thay đổi cuộc sống.
           </p>
-          <div className="flex items-center justify-center gap-4 text-sm md:text-base font-bold tracking-[0.15em] uppercase text-white/90">
-            <span>Chỉnh Chu</span>
-            <span className="w-1.5 h-1.5 bg-terracotta rounded-full" />
-            <span>Tỉ Mỉ</span>
-            <span className="w-1.5 h-1.5 bg-terracotta rounded-full" />
-            <span>Tạo Nên Giá Trị</span>
+          <div className="inline-flex items-center gap-5 px-10 py-5 border-2 border-white/20 rounded-full backdrop-blur-sm bg-white/5">
+            <span className="text-base md:text-lg font-bold tracking-[0.2em] uppercase text-white">Chỉnh Chu</span>
+            <span className="w-2 h-2 bg-terracotta rounded-full animate-pulse" />
+            <span className="text-base md:text-lg font-bold tracking-[0.2em] uppercase text-white">Tỉ Mỉ</span>
+            <span className="w-2 h-2 bg-terracotta rounded-full animate-pulse" />
+            <span className="text-base md:text-lg font-bold tracking-[0.2em] uppercase text-white">Tạo Nên Giá Trị</span>
           </div>
         </div>
       </section>
@@ -137,11 +137,11 @@ const MissionClient = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20 max-w-3xl mx-auto opacity-0-start">
             <span className="text-terracotta text-xs font-bold tracking-[0.2em] uppercase block mb-3">
-              Hành Trình
+              Chỉnh Chu — Hành Trình
             </span>
             <h2 className="text-4xl md:text-5xl font-serif font-bold text-stone-800 leading-tight mb-6">
-              8 Năm Dấu Ấn — Vượt Ra Khỏi <br className="hidden md:block" />
-              Dải Đất Hình Chữ S
+              8 Năm <em className="text-terracotta not-italic">Chỉnh Chu</em> Từng <br className="hidden md:block" />
+              Sản Phẩm Gửi Đi Khắp Thế Giới
             </h2>
             <p className="text-stone-600 leading-relaxed text-lg">
               Hàng chục nghìn sản phẩm không phải là những con số vô hồn chạy trên dây chuyền máy móc.
@@ -213,11 +213,11 @@ const MissionClient = () => {
             {/* Nội dung */}
             <article className="space-y-6 opacity-0-start delay-400">
               <span className="text-terracotta text-xs font-bold tracking-[0.2em] uppercase">
-                Trái Tim Của Xưởng
+                Tỉ Mỉ — Trái Tim Của Xưởng
               </span>
               <h2 className="text-3xl md:text-5xl font-serif font-bold text-stone-800 leading-tight">
-                Nơi Bắt Đầu <br />
-                <em className="text-terracotta not-italic">Những Tương Lai Mới</em>
+                <em className="text-terracotta not-italic">Tỉ Mỉ</em> Truyền Nghề, <br />
+                Nơi Bắt Đầu Những Tương Lai Mới
               </h2>
               <div className="w-20 h-1 bg-terracotta" />
               <div className="text-stone-600 leading-relaxed text-lg space-y-5 text-justify">
@@ -252,10 +252,11 @@ const MissionClient = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20 max-w-3xl mx-auto opacity-0-start">
             <span className="text-terracotta text-xs font-bold tracking-[0.2em] uppercase block mb-3">
-              Khát Vọng Bền Vững
+              Tạo Nên Giá Trị — Khát Vọng
             </span>
             <h2 className="text-4xl md:text-5xl font-serif font-bold text-stone-800 leading-tight">
-              Ba Trụ Cột Định Hướng Tương Lai
+              <em className="text-terracotta not-italic">Tạo Nên Giá Trị</em> Bền Vững <br className="hidden md:block" />
+              Cho Con Người & Cộng Đồng
             </h2>
             <p className="mt-6 text-stone-600 leading-relaxed text-lg">
               Mỗi quyết định tại xưởng đều xoay quanh ba giá trị này — không phải vì phải làm,
