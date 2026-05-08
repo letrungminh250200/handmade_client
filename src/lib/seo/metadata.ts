@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { SITE_NAME } from './seo.config';
+import { SITE_NAME, SITE_URL } from './seo.config';
 
 // ===== Types =====
 interface ProductMetaParams {
@@ -46,21 +46,31 @@ export function createProductMetadata(product: ProductMetaParams): Metadata {
 /** Tạo Metadata cho trang chi tiết tin tức */
 export function createNewsMetadata(news: NewsMetaParams): Metadata {
   const identifier = news.slug || news._id;
+  const articleUrl = `${SITE_URL}/news/${identifier}`;
+  const description =
+    news.shortDescription || `Bài viết: ${news.title} tại ${SITE_NAME}.`;
   return {
     title: news.title,
-    description:
-      news.shortDescription || `Bài viết: ${news.title} tại ${SITE_NAME}.`,
+    description,
     alternates: {
       canonical: `/news/${identifier}`,
     },
     openGraph: {
+      type: 'article',
+      url: articleUrl,
+      siteName: SITE_NAME,
+      locale: 'vi_VN',
       title: `${news.title} | ${SITE_NAME}`,
-      description:
-        news.shortDescription ||
-        `Tìm hiểu thêm về ${news.title} tại Blog ${SITE_NAME}.`,
+      description,
       images: news.imageUrl
-        ? [{ url: news.imageUrl, width: 800, height: 600 }]
+        ? [{ url: news.imageUrl, width: 1200, height: 630, alt: news.title }]
         : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: news.title,
+      description,
+      images: news.imageUrl ? [news.imageUrl] : [],
     },
   };
 }

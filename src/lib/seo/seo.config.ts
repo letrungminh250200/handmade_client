@@ -5,8 +5,7 @@ export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:30
 export const SITE_NAME = 'Minh Thư Handmade';
 export const DEFAULT_DESCRIPTION =
   'Cửa hàng thời trang handmade trực tuyến Minh Thư. Phong cách tối giản, tự nhiên. Tích hợp trợ lý ảo AI tư vấn phối đồ, quần áo móc len thủ công.';
-export const DEFAULT_OG_IMAGE =
-  'https://images.unsplash.com/photo-1596870230751-ebdfce98ec42?q=80&w=1200&h=630&auto=format&fit=crop';
+export const DEFAULT_OG_IMAGE = '/logo.png';
 export const DEFAULT_KEYWORDS = [
   'thời trang handmade',
   'đồ len handmade',

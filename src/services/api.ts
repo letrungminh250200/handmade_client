@@ -38,7 +38,7 @@ async function apiClient<T>(endpoint: string, options?: RequestInit): Promise<T>
  * Backend trả path dạng "/files/09/2025/image.png" hoặc full URL
  */
 export function resolveImageUrl(path: string | undefined): string {
-  if (!path) return 'https://images.unsplash.com/photo-1596870230751-ebdfce98ec42?q=80&w=1000&auto=format&fit=crop';
+  if (!path) return '/logo.png';
   if (path.startsWith('http://') || path.startsWith('https://')) return path;
   return `${API_URL}${path.startsWith('/') ? '' : '/'}${path}`;
 }

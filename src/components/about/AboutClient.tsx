@@ -145,7 +145,7 @@ const AboutClient = () => {
             <div className="pt-2 flex items-center gap-3 text-stone-500">
               <Award className="w-5 h-5 text-terracotta" />
               <span className="text-sm italic">
-                Thương hiệu thời trang thủ công độc lập — Thành phố Hồ Chí Minh, Việt Nam
+                Thương hiệu thời trang thủ công — Thành phố Hồ Chí Minh, Việt Nam
               </span>
             </div>
           </article>

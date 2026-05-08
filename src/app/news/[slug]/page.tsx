@@ -2,10 +2,12 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, Calendar, Eye, Share2 } from 'lucide-react';
-import { serverNewsApi, resolveImageUrl } from '@/services/server-api';
-import { NewsItem } from '@/lib/types';
+import { serverNewsApi, serverProductApi, resolveImageUrl } from '@/services/server-api';
+import { NewsItem, Product } from '@/lib/types';
 import type { Metadata } from 'next';
 import { SITE_URL, createArticleJsonLd, createBreadcrumbJsonLd, createNewsMetadata, JsonLdScript } from '@/lib/seo';
+import ExpandableArticle from '@/components/news/ExpandableArticle';
+import SidebarProducts from '@/components/news/SidebarProducts';
 
 function formatDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('vi-VN', {
@@ -56,6 +58,12 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
   try {
     const data = await serverNewsApi.getAll({ limit: 4 });
     otherPosts = (data.items || []).filter(n => n._id !== post!._id).slice(0, 3);
+  } catch { /* ignore */ }
+
+  // Fetch featured products for sidebar
+  let featuredProducts: Product[] = [];
+  try {
+    featuredProducts = await serverProductApi.getHotDeals(8);
   } catch { /* ignore */ }
 
   const heroImage = getNewsImage(post);
@@ -118,22 +126,29 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
               )}
 
               {/* Body Content (HTML from CMS) */}
-              {post.content && (
-                <div
-                  className="prose prose-stone prose-lg max-w-none text-stone-700 leading-9 box-description"
-                  dangerouslySetInnerHTML={{ __html: post.content }}
-                />
-              )}
+              {post.content && <ExpandableArticle html={post.content} />}
 
               {/* Share */}
               <div className="mt-16 pt-10 border-t border-stone-100 flex items-center gap-4">
                 <Share2 className="w-5 h-5 text-terracotta" />
                 <span className="font-serif font-bold text-stone-800">Chia sẻ câu chuyện</span>
+                <a
+                  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`${SITE_URL}/news/${postSlug}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Chia sẻ lên Facebook"
+                  className="ml-auto inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#1877F2] text-white text-sm font-medium hover:bg-[#0e63d4] transition-colors"
+                >
+                  <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4" aria-hidden="true">
+                    <path d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.408.593 24 1.325 24H12.82V14.706h-3.13v-3.622h3.13V8.413c0-3.1 1.894-4.788 4.66-4.788 1.325 0 2.464.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.73 0 1.323-.592 1.323-1.324V1.325C24 .593 23.407 0 22.675 0z"/>
+                  </svg>
+                  Facebook
+                </a>
               </div>
             </div>
 
             {/* Sidebar */}
-            <div className="lg:col-span-4 space-y-10">
+            <div data-news-sidebar className="lg:col-span-4 space-y-8">
               {/* More Stories */}
               {otherPosts.length > 0 && (
                 <div className="bg-white p-8 rounded-3xl shadow-sm border border-stone-100">
@@ -164,6 +179,11 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
                   </div>
                 </div>
               )}
+
+              {/* Featured Products */}
+              <div className="sticky top-4">
+                <SidebarProducts products={featuredProducts} />
+              </div>
             </div>
           </div>
         </div>
