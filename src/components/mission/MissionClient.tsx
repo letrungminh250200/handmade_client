@@ -116,10 +116,17 @@ const MissionClient = () => {
             Hơn Cả Một Nghề, <br />
             Đó Là Một <em className="text-terracotta not-italic">Sứ Mệnh</em>
           </h1>
-          <p className="text-lg md:text-xl font-light max-w-2xl mx-auto text-stone-100 leading-relaxed">
+          <p className="text-lg md:text-xl font-light max-w-2xl mx-auto text-stone-100 leading-relaxed mb-10">
             Chúng mình không đơn thuần đan len. Chúng mình đan kết những mảnh đời,
             gửi gắm hơi ấm và lan tỏa niềm tin rằng cái đẹp có thể thay đổi cuộc sống.
           </p>
+          <div className="flex items-center justify-center gap-4 text-sm md:text-base font-bold tracking-[0.15em] uppercase text-white/90">
+            <span>Chỉnh Chu</span>
+            <span className="w-1.5 h-1.5 bg-terracotta rounded-full" />
+            <span>Tỉ Mỉ</span>
+            <span className="w-1.5 h-1.5 bg-terracotta rounded-full" />
+            <span>Tạo Nên Giá Trị</span>
+          </div>
         </div>
       </section>
 
