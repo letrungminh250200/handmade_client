@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
         port: '5002',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'api.minhthuhandmade.com',
+      },
     ],
   },
 };

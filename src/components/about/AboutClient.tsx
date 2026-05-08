@@ -2,6 +2,7 @@
 
 import React, { useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   Heart,
   Leaf,
@@ -85,10 +86,12 @@ const AboutClient = () => {
         aria-label="Giới thiệu Minh Thư Handmade"
       >
         <div className="absolute inset-0 opacity-0-start delay-100">
-          <img
+          <Image
             src="https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?q=80&w=2000&auto=format&fit=crop"
             alt="Xưởng thủ công Minh Thư Handmade — không gian đan móc len"
-            className="w-full h-full object-cover"
+            fill
+            priority
+            className="object-cover"
           />
           <div className="absolute inset-0 bg-stone-900/60" />
         </div>
@@ -147,11 +150,13 @@ const AboutClient = () => {
             </div>
           </article>
           <div className="relative opacity-0-start delay-400">
-            <div className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl rotate-3 hover:rotate-0 transition-all duration-700">
-              <img
+            <div className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl rotate-3 hover:rotate-0 transition-all duration-700">
+              <Image
                 src="https://images.unsplash.com/photo-1516975080664-ed2fc6a32937?q=80&w=1000&auto=format&fit=crop"
                 alt="Đôi bàn tay đang đan len thủ công — biểu tượng của thương hiệu Minh Thư Handmade"
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                className="object-cover hover:scale-105 transition-transform duration-700"
               />
             </div>
             <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-stone-200 rounded-full -z-10" />
@@ -244,10 +249,12 @@ const AboutClient = () => {
           </div>
           <article className="opacity-0-start delay-200 bg-white p-10 md:p-16 rounded-[2.5rem] shadow-xl border border-stone-100 flex flex-col md:flex-row items-center gap-16">
             <div className="w-56 h-56 md:w-72 md:h-72 rounded-full overflow-hidden shrink-0 border-8 border-stone-50 shadow-lg relative group">
-              <img
+              <Image
                 src="https://api.minhthuhandmade.com/files/69be6b55c056dce3fe970942/05/2026/1778182788438-764448980.webp"
                 alt={`${FOUNDER_NAME} — Người sáng lập Minh Thư Handmade`}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                fill
+                sizes="(max-width: 768px) 224px, 288px"
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
               />
             </div>
             <div className="text-left flex-1">
@@ -258,7 +265,7 @@ const AboutClient = () => {
                 Người Vẽ Ước Mơ Bằng Sợi Len
               </p>
               <blockquote className="text-stone-600 italic leading-loose text-xl border-l-4 border-terracotta/40 pl-8 bg-stone-50/50 p-6 rounded-r-3xl relative">
-                <span className="absolute -top-4 -left-2 text-4xl text-terracotta/20 font-serif">"</span>
+                <span className="absolute -top-4 -left-2 text-4xl text-terracotta/20 font-serif">&quot;</span>
                 Mình thường nói với các cô chú nghệ nhân trong xưởng rằng: thời trang không đơn thuần chỉ để khoác lên người. Nó là một liệu pháp tinh thần. Khi bạn chạm vào một chiếc túi mềm mịn, cảm nhận sự chỉn chu trong từng chi tiết, đó là lúc bạn đang cho phép bản thân được nâng niu. 
                 <br /><br />
                 Giữa cuộc sống vốn dĩ đã quá vội vã và nhiều áp lực này, hy vọng một món đồ từ Minh Thư Handmade sẽ là góc nhỏ bình yên dành riêng cho bạn.

@@ -37,6 +37,7 @@ const Navbar: React.FC = () => {
             <Link href="/order-tracking" className={isActive('/order-tracking')}>Đơn Hàng</Link>
             <Link href="/news" className={isActive('/news')}>Tin Tức</Link>
             <Link href="/about" className={isActive('/about')}>Về Tiệm</Link>
+            <Link href="/su-menh" className={isActive('/su-menh')}>Sứ Mệnh</Link>
             <Link href="/contact" className={isActive('/contact')}>Liên Hệ</Link>
           </div>
 
@@ -73,6 +74,7 @@ const Navbar: React.FC = () => {
             <Link href="/order-tracking" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-stone-700">Đơn Hàng</Link>
             <Link href="/news" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-stone-700">Tin Tức</Link>
             <Link href="/about" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-stone-700">Về Tiệm</Link>
+            <Link href="/su-menh" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-stone-700">Sứ Mệnh</Link>
             <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)} className="block px-3 py-2 rounded-md text-base font-medium text-stone-700">Liên Hệ</Link>
           </div>
         </div>
